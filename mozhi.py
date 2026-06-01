@@ -2,156 +2,445 @@
 Mozhi - A Tanglish Programming Language
 "Mozhi" means "language" in Tamil.
 
-Syntax examples:
-    "hello world" sollu          -> print("hello world")
-    a = 10 vechukko              -> a = 10
-    a = a + 1 vechukko
-    i = 0 vechukko
-    i < 5 varaikum:              -> while i < 5:
-        i sollu
-        i = i + 1 vechukko
+Syntax:
+    "hello world" sollu              -> print
+    a = 10 vechukko                  -> variable assignment
+    i <= 5 varaikum:                 -> while loop
+        ...
     mudivu
-    a == 10 na:                  -> if a == 10:
-        "yes" sollu
-    illana:                      -> else:
-        "no" sollu
+    a == 10 na:                      -> if
+        ...
+    illana:                          -> else
+        ...
     mudivu
+    seiy add(x, y):                  -> function def
+        x + y thirumbu
+    mudivu
+    result = add(3, 4) vechukko
+
+Built-ins:
+    kelu("prompt")   -> input()
+    neelavai(x)      -> len(x)
+    enn(x)           -> int(x)
+    padam(x)         -> float(x)
+    vaari(x)         -> str(x)
+
+Operators:
+    mattrum          -> and
+    illaiyal         -> or
+    illa <expr>      -> not
 """
 
-from lark import Lark, Transformer, v_args, Tree, Token
 import sys
+import re
 import operator
 
 # ─────────────────────────────────────────────
-# GRAMMAR
+# TOKENIZER
 # ─────────────────────────────────────────────
 
-MOZHI_GRAMMAR = r"""
-    start: statement+
+TT_NUMBER   = 'NUMBER'
+TT_STRING   = 'STRING'
+TT_NAME     = 'NAME'
+TT_KEYWORD  = 'KEYWORD'
+TT_OP       = 'OP'
+TT_LPAREN   = 'LPAREN'
+TT_RPAREN   = 'RPAREN'
+TT_COMMA    = 'COMMA'
+TT_COLON    = 'COLON'
+TT_NEWLINE  = 'NEWLINE'
+TT_INDENT   = 'INDENT'
+TT_DEDENT   = 'DEDENT'
+TT_EOF      = 'EOF'
 
-    statement: assign_stmt
-             | print_stmt
-             | while_stmt
-             | if_stmt
-             | func_def
-             | func_call_stmt
-             | return_stmt
-             | break_stmt
+KEYWORDS = {
+    'sollu', 'vechukko', 'varaikum', 'na', 'illana',
+    'mudivu', 'seiy', 'thirumbu', 'nillu',
+    'mattrum', 'illaiyal', 'illa', 'true', 'false'
+}
 
-    // Variable assignment: name = expr vechukko
-    assign_stmt: NAME "=" expr "vechukko" NEWLINE+
+class Token:
+    def __init__(self, type_, value, line=0):
+        self.type = type_
+        self.value = value
+        self.line = line
 
-    // Print: expr sollu
-    print_stmt: expr "sollu" NEWLINE+
+    def __repr__(self):
+        return f'Token({self.type}, {self.value!r})'
 
-    // While: expr varaikum: block mudivu
-    while_stmt: expr "varaikum" ":" NEWLINE+ INDENT statement+ DEDENT "mudivu" NEWLINE*
-
-    // If: expr na: block [illana: block] mudivu
-    if_stmt: expr "na" ":" NEWLINE+ INDENT statement+ DEDENT ("illana" ":" NEWLINE+ INDENT statement+ DEDENT)? "mudivu" NEWLINE*
-
-    // Function def: seiy name(params): block mudivu
-    func_def: "seiy" NAME "(" params? ")" ":" NEWLINE+ INDENT statement+ DEDENT "mudivu" NEWLINE*
-
-    // Function call as statement
-    func_call_stmt: func_call NEWLINE+
-
-    // Return: expr thirumbu
-    return_stmt: expr "thirumbu" NEWLINE+
-
-    // Break: nillு
-    break_stmt: "nillu" NEWLINE+
-
-    params: NAME ("," NAME)*
-
-    // Expressions
-    expr: or_expr
-
-    or_expr: and_expr ("illaiyal" and_expr)*
-
-    and_expr: not_expr ("mattrum" not_expr)*
-
-    not_expr: "illa" not_expr -> not_expr
-            | compare_expr
-
-    compare_expr: add_expr (CMP_OP add_expr)*
-
-    add_expr: mul_expr (("+"|"-") mul_expr)*
-
-    mul_expr: unary_expr (("*"|"/"|"%") unary_expr)*
-
-    unary_expr: "-" unary_expr -> neg_expr
-              | primary
-
-    primary: NUMBER          -> number
-           | STRING          -> string
-           | "true"          -> true_val
-           | "false"         -> false_val
-           | func_call
-           | NAME            -> var
-           | "(" expr ")"    -> paren
-
-    func_call: NAME "(" args? ")"
-
-    args: expr ("," expr)*
-
-    CMP_OP: "==" | "!=" | "<=" | ">=" | "<" | ">"
-
-    NAME: /[a-zA-Z_][a-zA-Z0-9_]*/
-    NUMBER: /[0-9]+(\.[0-9]+)?/
-    STRING: /\"[^\"]*\"|'[^']*'/
-
-    NEWLINE: /\n/
-    INDENT: "<INDENT>"
-    DEDENT: "<DEDENT>"
-
-    %ignore /[ \t]+/
-    %ignore /#[^\n]*/
-"""
-
-# ─────────────────────────────────────────────
-# INDENTATION PREPROCESSOR
-# Lark doesn't do Python-style indentation natively,
-# so we inject INDENT/DEDENT tokens manually.
-# ─────────────────────────────────────────────
-
-def preprocess_indentation(source: str) -> str:
-    lines = source.split('\n')
-    result = []
+def tokenize(source: str):
+    tokens = []
+    lines = source.splitlines(keepends=True)
     indent_stack = [0]
 
-    for line in lines:
-        stripped = line.lstrip()
-
+    for lineno, line in enumerate(lines, 1):
         # Skip blank lines and comments
+        stripped = line.strip()
         if not stripped or stripped.startswith('#'):
-            result.append(line)
             continue
 
-        indent = len(line) - len(stripped)
-        current = indent_stack[-1]
+        # Measure indent
+        indent = len(line) - len(line.lstrip())
+        current_indent = indent_stack[-1]
 
-        if indent > current:
+        if indent > current_indent:
             indent_stack.append(indent)
-            result.append('<INDENT>')
-            result.append(line)
-        elif indent < current:
+            tokens.append(Token(TT_INDENT, indent, lineno))
+        elif indent < current_indent:
             while indent_stack[-1] > indent:
                 indent_stack.pop()
-                result.append('<DEDENT>')
-            result.append(line)
-        else:
-            result.append(line)
+                tokens.append(Token(TT_DEDENT, indent, lineno))
 
-    # Close any remaining indents
+        # Lex the actual content
+        content = stripped
+        col = 0
+        while col < len(content):
+            # Skip spaces
+            if content[col] == ' ':
+                col += 1
+                continue
+
+            # Comment
+            if content[col] == '#':
+                break
+
+            # String
+            if content[col] in ('"', "'"):
+                q = content[col]
+                end = content.index(q, col + 1)
+                tokens.append(Token(TT_STRING, content[col+1:end], lineno))
+                col = end + 1
+                continue
+
+            # Number
+            m = re.match(r'\d+(\.\d+)?', content[col:])
+            if m:
+                val = m.group()
+                tokens.append(Token(TT_NUMBER, float(val) if '.' in val else int(val), lineno))
+                col += len(val)
+                continue
+
+            # Operators
+            for op in ('==', '!=', '<=', '>=', '<', '>', '+', '-', '*', '/', '%', '='):
+                if content[col:].startswith(op):
+                    tokens.append(Token(TT_OP, op, lineno))
+                    col += len(op)
+                    break
+            else:
+                # Single chars
+                c = content[col]
+                if c == '(':
+                    tokens.append(Token(TT_LPAREN, '(', lineno))
+                elif c == ')':
+                    tokens.append(Token(TT_RPAREN, ')', lineno))
+                elif c == ',':
+                    tokens.append(Token(TT_COMMA, ',', lineno))
+                elif c == ':':
+                    tokens.append(Token(TT_COLON, ':', lineno))
+                elif re.match(r'[a-zA-Z_]', c):
+                    m2 = re.match(r'[a-zA-Z_][a-zA-Z0-9_]*', content[col:])
+                    word = m2.group()
+                    tt = TT_KEYWORD if word in KEYWORDS else TT_NAME
+                    tokens.append(Token(tt, word, lineno))
+                    col += len(word)
+                    continue
+                else:
+                    raise SyntaxError(f"[Mozhi] Line {lineno}: Theriyatha character '{c}'")
+                col += 1
+
+        tokens.append(Token(TT_NEWLINE, '\n', lineno))
+
+    # Close remaining indents
     while len(indent_stack) > 1:
         indent_stack.pop()
-        result.append('<DEDENT>')
+        tokens.append(Token(TT_DEDENT, 0, 0))
 
-    return '\n'.join(result)
+    tokens.append(Token(TT_EOF, None, 0))
+    return tokens
 
 # ─────────────────────────────────────────────
-# ENVIRONMENT (scope chain)
+# AST NODES
+# ─────────────────────────────────────────────
+
+class Assign:
+    def __init__(self, name, expr): self.name = name; self.expr = expr
+
+class Print:
+    def __init__(self, expr): self.expr = expr
+
+class While:
+    def __init__(self, cond, body): self.cond = cond; self.body = body
+
+class If:
+    def __init__(self, cond, then_body, else_body): self.cond = cond; self.then_body = then_body; self.else_body = else_body
+
+class FuncDef:
+    def __init__(self, name, params, body): self.name = name; self.params = params; self.body = body
+
+class Return:
+    def __init__(self, expr): self.expr = expr
+
+class Break:
+    pass
+
+class BinOp:
+    def __init__(self, left, op, right): self.left = left; self.op = op; self.right = right
+
+class UnaryOp:
+    def __init__(self, op, operand): self.op = op; self.operand = operand
+
+class Num:
+    def __init__(self, value): self.value = value
+
+class Str:
+    def __init__(self, value): self.value = value
+
+class Bool:
+    def __init__(self, value): self.value = value
+
+class Var:
+    def __init__(self, name): self.name = name
+
+class FuncCall:
+    def __init__(self, name, args): self.name = name; self.args = args
+
+# ─────────────────────────────────────────────
+# PARSER
+# ─────────────────────────────────────────────
+
+class Parser:
+    def __init__(self, tokens):
+        self.tokens = tokens
+        self.pos = 0
+
+    def peek(self):
+        return self.tokens[self.pos]
+
+    def peek2(self):
+        if self.pos + 1 < len(self.tokens):
+            return self.tokens[self.pos + 1]
+        return Token(TT_EOF, None)
+
+    def consume(self, type_=None, value=None):
+        tok = self.tokens[self.pos]
+        if type_ and tok.type != type_:
+            raise SyntaxError(f"[Mozhi] Line {tok.line}: Expected {type_}, got {tok.type} ({tok.value!r})")
+        if value and tok.value != value:
+            raise SyntaxError(f"[Mozhi] Line {tok.line}: Expected '{value}', got '{tok.value}'")
+        self.pos += 1
+        return tok
+
+    def skip_newlines(self):
+        while self.peek().type == TT_NEWLINE:
+            self.pos += 1
+
+    def parse(self):
+        stmts = []
+        self.skip_newlines()
+        while self.peek().type != TT_EOF:
+            stmts.append(self.parse_stmt())
+            self.skip_newlines()
+        return stmts
+
+    def parse_block(self):
+        self.consume(TT_INDENT)
+        self.skip_newlines()
+        stmts = []
+        while self.peek().type not in (TT_DEDENT, TT_EOF):
+            stmts.append(self.parse_stmt())
+            self.skip_newlines()
+        self.consume(TT_DEDENT)
+        return stmts
+
+    def parse_stmt(self):
+        tok = self.peek()
+
+        # Function definition: seiy name(...):
+        if tok.type == TT_KEYWORD and tok.value == 'seiy':
+            return self.parse_func_def()
+
+        # Break
+        if tok.type == TT_KEYWORD and tok.value == 'nillu':
+            self.consume()
+            self.consume(TT_NEWLINE)
+            return Break()
+
+        # Assignment check: NAME = expr vechukko
+        # We need lookahead: NAME followed by '='
+        if tok.type == TT_NAME and self.peek2().type == TT_OP and self.peek2().value == '=':
+            return self.parse_assign()
+
+        # Otherwise parse expr and check trailing keyword
+        expr = self.parse_expr()
+        nxt = self.peek()
+
+        if nxt.type == TT_KEYWORD and nxt.value == 'sollu':
+            self.consume()
+            self.consume(TT_NEWLINE)
+            return Print(expr)
+
+        elif nxt.type == TT_KEYWORD and nxt.value == 'thirumbu':
+            self.consume()
+            self.consume(TT_NEWLINE)
+            return Return(expr)
+
+        elif nxt.type == TT_KEYWORD and nxt.value == 'varaikum':
+            self.consume()
+            self.consume(TT_COLON)
+            self.consume(TT_NEWLINE)
+            body = self.parse_block()
+            self.consume(TT_KEYWORD, 'mudivu')
+            self.consume(TT_NEWLINE)
+            return While(expr, body)
+
+        elif nxt.type == TT_KEYWORD and nxt.value == 'na':
+            self.consume()
+            self.consume(TT_COLON)
+            self.consume(TT_NEWLINE)
+            then_body = self.parse_block()
+            else_body = []
+            if self.peek().type == TT_KEYWORD and self.peek().value == 'illana':
+                self.consume()
+                self.consume(TT_COLON)
+                self.consume(TT_NEWLINE)
+                else_body = self.parse_block()
+            self.consume(TT_KEYWORD, 'mudivu')
+            self.consume(TT_NEWLINE)
+            return If(expr, then_body, else_body)
+
+        # Bare function call as statement
+        elif nxt.type == TT_NEWLINE:
+            self.consume(TT_NEWLINE)
+            return expr  # will be FuncCall node
+
+        raise SyntaxError(f"[Mozhi] Line {nxt.line}: Enna pannara? '{nxt.value}' theriyala")
+
+    def parse_assign(self):
+        name = self.consume(TT_NAME).value
+        self.consume(TT_OP, '=')
+        expr = self.parse_expr()
+        self.consume(TT_KEYWORD, 'vechukko')
+        self.consume(TT_NEWLINE)
+        return Assign(name, expr)
+
+    def parse_func_def(self):
+        self.consume(TT_KEYWORD, 'seiy')
+        name = self.consume(TT_NAME).value
+        self.consume(TT_LPAREN)
+        params = []
+        if self.peek().type == TT_NAME:
+            params.append(self.consume(TT_NAME).value)
+            while self.peek().type == TT_COMMA:
+                self.consume(TT_COMMA)
+                params.append(self.consume(TT_NAME).value)
+        self.consume(TT_RPAREN)
+        self.consume(TT_COLON)
+        self.consume(TT_NEWLINE)
+        body = self.parse_block()
+        self.consume(TT_KEYWORD, 'mudivu')
+        self.consume(TT_NEWLINE)
+        return FuncDef(name, params, body)
+
+    # Expression parsing (precedence climbing)
+    def parse_expr(self):
+        return self.parse_or()
+
+    def parse_or(self):
+        left = self.parse_and()
+        while self.peek().type == TT_KEYWORD and self.peek().value == 'illaiyal':
+            self.consume()
+            right = self.parse_and()
+            left = BinOp(left, 'illaiyal', right)
+        return left
+
+    def parse_and(self):
+        left = self.parse_not()
+        while self.peek().type == TT_KEYWORD and self.peek().value == 'mattrum':
+            self.consume()
+            right = self.parse_not()
+            left = BinOp(left, 'mattrum', right)
+        return left
+
+    def parse_not(self):
+        if self.peek().type == TT_KEYWORD and self.peek().value == 'illa':
+            self.consume()
+            return UnaryOp('illa', self.parse_not())
+        return self.parse_compare()
+
+    def parse_compare(self):
+        left = self.parse_add()
+        while self.peek().type == TT_OP and self.peek().value in ('==', '!=', '<', '>', '<=', '>='):
+            op = self.consume().value
+            right = self.parse_add()
+            left = BinOp(left, op, right)
+        return left
+
+    def parse_add(self):
+        left = self.parse_mul()
+        while self.peek().type == TT_OP and self.peek().value in ('+', '-'):
+            op = self.consume().value
+            right = self.parse_mul()
+            left = BinOp(left, op, right)
+        return left
+
+    def parse_mul(self):
+        left = self.parse_unary()
+        while self.peek().type == TT_OP and self.peek().value in ('*', '/', '%'):
+            op = self.consume().value
+            right = self.parse_unary()
+            left = BinOp(left, op, right)
+        return left
+
+    def parse_unary(self):
+        if self.peek().type == TT_OP and self.peek().value == '-':
+            self.consume()
+            return UnaryOp('-', self.parse_unary())
+        return self.parse_primary()
+
+    def parse_primary(self):
+        tok = self.peek()
+
+        if tok.type == TT_NUMBER:
+            self.consume()
+            return Num(tok.value)
+
+        if tok.type == TT_STRING:
+            self.consume()
+            return Str(tok.value)
+
+        if tok.type == TT_KEYWORD and tok.value == 'true':
+            self.consume()
+            return Bool(True)
+
+        if tok.type == TT_KEYWORD and tok.value == 'false':
+            self.consume()
+            return Bool(False)
+
+        if tok.type == TT_LPAREN:
+            self.consume(TT_LPAREN)
+            expr = self.parse_expr()
+            self.consume(TT_RPAREN)
+            return expr
+
+        # Name or function call
+        if tok.type == TT_NAME:
+            name = self.consume(TT_NAME).value
+            if self.peek().type == TT_LPAREN:
+                self.consume(TT_LPAREN)
+                args = []
+                if self.peek().type != TT_RPAREN:
+                    args.append(self.parse_expr())
+                    while self.peek().type == TT_COMMA:
+                        self.consume(TT_COMMA)
+                        args.append(self.parse_expr())
+                self.consume(TT_RPAREN)
+                return FuncCall(name, args)
+            return Var(name)
+
+        raise SyntaxError(f"[Mozhi] Line {tok.line}: Unexpected '{tok.value}' — enna ithu?")
+
+# ─────────────────────────────────────────────
+# RUNTIME
 # ─────────────────────────────────────────────
 
 class Environment:
@@ -164,319 +453,192 @@ class Environment:
             return self.vars[name]
         if self.parent:
             return self.parent.get(name)
-        raise NameError(f"'da {name}' theriyala — define pannunga first")
+        raise NameError(f"[Mozhi] '{name}' theriyala da — vechukko pannunga first")
 
     def set(self, name, value):
         self.vars[name] = value
 
-    def set_existing(self, name, value):
-        if name in self.vars:
-            self.vars[name] = value
-        elif self.parent:
-            self.parent.set_existing(name, value)
-        else:
-            self.vars[name] = value
-
-# ─────────────────────────────────────────────
-# SIGNALS (control flow)
-# ─────────────────────────────────────────────
+class MozhiFunction:
+    def __init__(self, name, params, body, closure):
+        self.name = name; self.params = params
+        self.body = body; self.closure = closure
+    def __repr__(self):
+        return f"<mozhi seiy '{self.name}'>"
 
 class ReturnSignal(Exception):
-    def __init__(self, value):
-        self.value = value
+    def __init__(self, value): self.value = value
 
 class BreakSignal(Exception):
     pass
 
-# ─────────────────────────────────────────────
-# FUNCTION
-# ─────────────────────────────────────────────
+CMP = {'==': operator.eq, '!=': operator.ne, '<': operator.lt,
+       '>': operator.gt, '<=': operator.le, '>=': operator.ge}
 
-class MozhiFunction:
-    def __init__(self, name, params, body, closure):
-        self.name = name
-        self.params = params
-        self.body = body
-        self.closure = closure
-
-    def __repr__(self):
-        return f"<mozhi function '{self.name}'>"
-
-# ─────────────────────────────────────────────
-# INTERPRETER
-# ─────────────────────────────────────────────
-
-CMP_OPS = {
-    '==': operator.eq,
-    '!=': operator.ne,
-    '<':  operator.lt,
-    '>':  operator.gt,
-    '<=': operator.le,
-    '>=': operator.ge,
+BUILTINS = {
+    'kelu':     lambda args: input(str(args[0]) if args else ''),
+    'neelavai': lambda args: len(args[0]),
+    'enn':      lambda args: int(args[0]),
+    'padam':    lambda args: float(args[0]),
+    'vaari':    lambda args: str(args[0]),
 }
 
-class MozhiInterpreter:
-    def __init__(self):
-        self.global_env = Environment()
-
-    def run(self, source: str):
-        processed = preprocess_indentation(source)
-        parser = Lark(MOZHI_GRAMMAR, parser='earley', ambiguity='resolve')
-        try:
-            tree = parser.parse(processed)
-        except Exception as e:
-            print(f"[Mozhi Syntax Error] {e}")
-            sys.exit(1)
-        self.exec_block(tree.children, self.global_env)
-
+class Interpreter:
     def exec_block(self, stmts, env):
         for stmt in stmts:
-            if isinstance(stmt, Tree):
-                self.exec_stmt(stmt, env)
+            self.exec(stmt, env)
 
-    def exec_stmt(self, node: Tree, env: Environment):
-        t = node.data
+    def exec(self, node, env):
+        if isinstance(node, Assign):
+            env.set(node.name, self.eval(node.expr, env))
 
-        if t == 'assign_stmt':
-            name = str(node.children[0])
-            value = self.eval_expr(node.children[1], env)
-            env.set(name, value)
+        elif isinstance(node, Print):
+            print(self.mozhi_repr(self.eval(node.expr, env)))
 
-        elif t == 'print_stmt':
-            value = self.eval_expr(node.children[0], env)
-            print(self.mozhi_repr(value))
-
-        elif t == 'while_stmt':
-            condition_node = node.children[0]
-            body = node.children[1:]
-            while self.is_truthy(self.eval_expr(condition_node, env)):
+        elif isinstance(node, While):
+            while self.truthy(self.eval(node.cond, env)):
                 try:
-                    self.exec_block(body, Environment(env))
+                    self.exec_block(node.body, Environment(env))
                 except BreakSignal:
                     break
 
-        elif t == 'if_stmt':
-            condition_node = node.children[0]
-            # Find INDENT/DEDENT boundaries — children after condition are if-body then optional else-body
-            # We split manually: look for structure
-            children = node.children[1:]
-            # Split into if_body and else_body by counting — grammar ensures ordering
-            if_body = []
-            else_body = []
-            in_else = False
-            for child in children:
-                if isinstance(child, Token) and str(child) == 'illana':
-                    in_else = True
-                    continue
-                if in_else:
-                    else_body.append(child)
-                else:
-                    if_body.append(child)
+        elif isinstance(node, If):
+            if self.truthy(self.eval(node.cond, env)):
+                self.exec_block(node.then_body, Environment(env))
+            elif node.else_body:
+                self.exec_block(node.else_body, Environment(env))
 
-            if self.is_truthy(self.eval_expr(condition_node, env)):
-                self.exec_block(if_body, Environment(env))
-            elif else_body:
-                self.exec_block(else_body, Environment(env))
+        elif isinstance(node, FuncDef):
+            env.set(node.name, MozhiFunction(node.name, node.params, node.body, env))
 
-        elif t == 'func_def':
-            name = str(node.children[0])
-            params_node = node.children[1] if isinstance(node.children[1], Tree) and node.children[1].data == 'params' else None
-            params = [str(p) for p in params_node.children] if params_node else []
-            body_start = 2 if params_node else 1
-            body = node.children[body_start:]
-            fn = MozhiFunction(name, params, body, env)
-            env.set(name, fn)
+        elif isinstance(node, Return):
+            raise ReturnSignal(self.eval(node.expr, env))
 
-        elif t == 'func_call_stmt':
-            self.eval_expr(node.children[0], env)
-
-        elif t == 'return_stmt':
-            value = self.eval_expr(node.children[0], env)
-            raise ReturnSignal(value)
-
-        elif t == 'break_stmt':
+        elif isinstance(node, Break):
             raise BreakSignal()
 
-        elif t == 'statement':
-            self.exec_stmt(node.children[0], env)
-
-    def eval_expr(self, node, env: Environment):
-        if isinstance(node, Token):
-            return str(node)
-
-        t = node.data
-
-        if t == 'expr' or t == 'or_expr' or t == 'and_expr' or t == 'compare_expr' or t == 'add_expr' or t == 'mul_expr':
-            return self.eval_binary(node, env)
-
-        elif t == 'not_expr':
-            return not self.is_truthy(self.eval_expr(node.children[0], env))
-
-        elif t == 'neg_expr':
-            return -self.eval_expr(node.children[0], env)
-
-        elif t == 'paren':
-            return self.eval_expr(node.children[0], env)
-
-        elif t == 'number':
-            val = str(node.children[0])
-            return float(val) if '.' in val else int(val)
-
-        elif t == 'string':
-            raw = str(node.children[0])
-            return raw[1:-1]  # strip quotes
-
-        elif t == 'true_val':
-            return True
-
-        elif t == 'false_val':
-            return False
-
-        elif t == 'var':
-            return env.get(str(node.children[0]))
-
-        elif t == 'func_call':
-            return self.eval_func_call(node, env)
-
-        elif t == 'unary_expr' or t == 'primary':
-            return self.eval_expr(node.children[0], env)
+        elif isinstance(node, FuncCall):
+            self.eval(node, env)
 
         else:
-            # Fallthrough for wrapper nodes
-            if len(node.children) == 1:
-                return self.eval_expr(node.children[0], env)
-            return self.eval_binary(node, env)
+            raise RuntimeError(f"[Mozhi] Exec theriyala: {type(node).__name__}")
 
-    def eval_binary(self, node, env):
-        children = node.children
-        if len(children) == 1:
-            return self.eval_expr(children[0], env)
+    def eval(self, node, env):
+        if isinstance(node, Num):   return node.value
+        if isinstance(node, Str):   return node.value
+        if isinstance(node, Bool):  return node.value
+        if isinstance(node, Var):   return env.get(node.name)
 
-        t = node.data
-        result = self.eval_expr(children[0], env)
+        if isinstance(node, BinOp):
+            l = self.eval(node.left, env)
+            r = self.eval(node.right, env)
+            op = node.op
+            if op in CMP:           return CMP[op](l, r)
+            if op == '+':           return l + r
+            if op == '-':           return l - r
+            if op == '*':           return l * r
+            if op == '/':           return l / r
+            if op == '%':           return l % r
+            if op == 'mattrum':     return self.truthy(l) and self.truthy(r)
+            if op == 'illaiyal':    return self.truthy(l) or self.truthy(r)
 
-        i = 1
-        while i < len(children):
-            op_token = str(children[i])
-            right = self.eval_expr(children[i + 1], env)
-            i += 2
+        if isinstance(node, UnaryOp):
+            v = self.eval(node.operand, env)
+            if node.op == '-':   return -v
+            if node.op == 'illa': return not self.truthy(v)
 
-            if op_token in CMP_OPS:
-                result = CMP_OPS[op_token](result, right)
-            elif op_token == '+':
-                result = result + right
-            elif op_token == '-':
-                result = result - right
-            elif op_token == '*':
-                result = result * right
-            elif op_token == '/':
-                result = result / right
-            elif op_token == '%':
-                result = result % right
-            elif op_token == 'mattrum':
-                result = self.is_truthy(result) and self.is_truthy(right)
-            elif op_token == 'illaiyal':
-                result = self.is_truthy(result) or self.is_truthy(right)
+        if isinstance(node, FuncCall):
+            if node.name in BUILTINS:
+                args = [self.eval(a, env) for a in node.args]
+                return BUILTINS[node.name](args)
+            fn = env.get(node.name)
+            if not isinstance(fn, MozhiFunction):
+                raise TypeError(f"[Mozhi] '{node.name}' function illa")
+            if len(node.args) != len(fn.params):
+                raise TypeError(f"[Mozhi] '{node.name}' ku {len(fn.params)} args venum, {len(node.args)} kuduthunga")
+            call_env = Environment(fn.closure)
+            for p, a in zip(fn.params, node.args):
+                call_env.set(p, self.eval(a, env))
+            try:
+                self.exec_block(fn.body, call_env)
+                return None
+            except ReturnSignal as r:
+                return r.value
 
-        return result
+        raise RuntimeError(f"[Mozhi] Eval theriyala: {type(node).__name__}")
 
-    def eval_func_call(self, node, env):
-        name = str(node.children[0])
-        args_node = node.children[1] if len(node.children) > 1 and isinstance(node.children[1], Tree) else None
-        args = [self.eval_expr(a, env) for a in args_node.children] if args_node else []
+    def truthy(self, v):
+        return v not in (None, False, 0, 0.0, '')
 
-        # Built-ins
-        if name == 'kelu':       # input
-            prompt = args[0] if args else ''
-            return input(str(prompt))
-        elif name == 'neelavai': # len
-            return len(args[0])
-        elif name == 'enn':      # int cast
-            return int(args[0])
-        elif name == 'padam':    # float cast
-            return float(args[0])
-        elif name == 'vaari':    # str cast
-            return str(args[0])
-
-        fn = env.get(name)
-        if not isinstance(fn, MozhiFunction):
-            raise TypeError(f"'{name}' oru function illa da")
-
-        if len(args) != len(fn.params):
-            raise TypeError(f"'{name}' ku {len(fn.params)} arguments venum, {len(args)} kuduthunga")
-
-        call_env = Environment(fn.closure)
-        for param, arg in zip(fn.params, args):
-            call_env.set(param, arg)
-
-        try:
-            self.exec_block(fn.body, call_env)
-            return None
-        except ReturnSignal as r:
-            return r.value
-
-    def is_truthy(self, val):
-        if val is None or val is False or val == 0 or val == '':
-            return False
-        return True
-
-    def mozhi_repr(self, val):
-        if val is True: return 'true'
-        if val is False: return 'false'
-        if val is None: return 'onnum illa'
-        if isinstance(val, float) and val.is_integer():
-            return str(int(val))
-        return str(val)
+    def mozhi_repr(self, v):
+        if v is True:  return 'true'
+        if v is False: return 'false'
+        if v is None:  return 'onnum illa'
+        if isinstance(v, float) and v.is_integer(): return str(int(v))
+        return str(v)
 
 # ─────────────────────────────────────────────
 # ENTRY
 # ─────────────────────────────────────────────
 
-def main():
-    if len(sys.argv) < 2:
-        print("Usage: python mozhi.py <file.mozhi>")
-        print("       python mozhi.py --example")
-        sys.exit(0)
-
-    if sys.argv[1] == '--example':
-        example = """
-# Mozhi example program
+EXAMPLE = """\
+# Mozhi example — Vanakkam!
 
 "Vanakkam world!" sollu
 
 a = 10 vechukko
-b = 20 vechukko
+b = 32 vechukko
 c = a + b vechukko
 c sollu
 
+# While loop
 i = 1 vechukko
 i <= 5 varaikum:
     i sollu
     i = i + 1 vechukko
 mudivu
 
+# If / else
 a == 10 na:
-    "a paththu dhaan" sollu
+    "a paththu dhaan!" sollu
 illana:
-    "a paththu illa" sollu
+    "a vera edhaavo" sollu
 mudivu
 
+# Function
 seiy koodunga(x, y):
     x + y thirumbu
 mudivu
 
 result = koodunga(7, 8) vechukko
 result sollu
+
+# Nested condition
+seiy check(n):
+    n > 100 na:
+        "periya number" sollu
+    illana:
+        "chinna number" sollu
+    mudivu
+mudivu
+
+check(42)
+check(200)
 """
-        interp = MozhiInterpreter()
-        interp.run(example)
+
+def run(source: str):
+    tokens = tokenize(source)
+    parser = Parser(tokens)
+    ast = parser.parse()
+    interp = Interpreter()
+    interp.exec_block(ast, Environment())
+
+def main():
+    if len(sys.argv) < 2 or sys.argv[1] == '--example':
+        print("─── Mozhi Example ───")
+        run(EXAMPLE)
         return
-
     with open(sys.argv[1], 'r') as f:
-        source = f.read()
-
-    interp = MozhiInterpreter()
-    interp.run(source)
+        run(f.read())
 
 if __name__ == '__main__':
     main()
