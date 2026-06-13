@@ -1,0 +1,38 @@
+# Library System in Mozhi
+
+vagai Book:
+    seiy initialize(naan, title, author):
+        naan.title = title vechukko
+        naan.author = author vechukko
+    mudivu
+
+    seiy summary(naan):
+        # Using kooda to concatenate the object properties
+        "Book: " kooda naan.title kooda " by " kooda naan.author sollu
+    mudivu
+mudivu
+
+# Initialize empty library varisai
+library = [] vechukko
+
+# Create some books
+b1 = Book porul vechukko
+b1.initialize("Ponniyin Selvan", "Kalki")
+
+b2 = Book porul vechukko
+b2.initialize("Thirukkural", "Thiruvalluvar")
+
+# Add to varisai
+b1 ullapodu library
+b2 ullapodu library
+
+# Loop through the varisai and call a method on each object
+"--- Library Catalog ---" sollu
+i = 0 vechukko
+len_lib = neelam(library) vechukko
+
+i < len_lib varaikum:
+    book = library[i] vechukko
+    book.summary()
+    i = i + 1 vechukko
+mudivu

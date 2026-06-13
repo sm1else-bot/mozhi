@@ -1,0 +1,13 @@
+name = "Nanba" vechukko
+greeting = "Vanakkam, " kooda name vechukko
+greeting sollu
+
+numbers = [10, 20, 30] vechukko
+99 ullapodu numbers
+"Array: " kooda numbers sollu
+
+i = 0 vechukko
+i < 3 varaikum:
+    i = i + 1 vechukko
+    i sollu
+mudivu

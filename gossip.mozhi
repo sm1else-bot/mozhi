@@ -1,0 +1,51 @@
+# The Office Gossip Simulator
+
+vagai Coworker:
+    seiy initialize(ennoda, name, secret):
+        ennoda.name = name vechukko
+        ennoda.secret = secret vechukko
+    mudivu
+
+    seiy talk(ennoda, target):
+        "Hey " kooda target.name kooda ", did u hear? " sollu
+        ennoda.secret sollu
+    mudivu
+mudivu
+
+# The team
+team = [] vechukko
+
+# Initialize coworkers
+c1 = Coworker porul vechukko
+c1.initialize("Suresh", "inippu sambar thingiravan avan!")
+
+c2 = Coworker porul vechukko
+c2.initialize("Anita", "ava innum complan kudikirava!")
+
+# Add to the varisai
+c1 ullapodu team
+c2 ullapodu team
+
+"--- Daily Office Update ---" sollu
+
+# Suresh gossips about Anita, then Anita gossips about Suresh
+i = 0 vechukko
+i < 2 varaikum:
+    current = team[i] vechukko
+    
+    # Pre-declare target so it exists in the loop scope
+    target = "" vechukko
+    
+    # Logic to gossip about the other person
+    i == 0 na:
+        target = team[1] vechukko
+    illana:
+        target = team[0] vechukko
+    mudivu
+    
+    current.talk(target)
+    i = i + 1 vechukko
+mudivu
+
+"See you tomorrow for more drama!" sollu
+podhum

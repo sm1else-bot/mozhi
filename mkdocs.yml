@@ -1,0 +1,46 @@
+site_name: Mozhi Documentation
+site_description: Professional documentation for the Tanglish-based Mozhi programming language.
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: blue
+      accent: blue
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: blue
+      accent: blue
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - search.highlight
+    - search.suggest
+
+markdown_extensions:
+  - admonition
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+
+nav:
+  - Welcome: index.md
+  - Basics:
+      - Variables & Constants: basics/variables.md
+      - Input & Output: basics/io.md
+  - Control Flow:
+      - Conditionals: control-flow/conditionals.md
+      - Loops: control-flow/loops.md
+  - Advanced Features:
+      - Arrays (Varisai): advanced/arrays.md
+      - Object-Oriented (OOP): advanced/oop.md
+  - Examples:
+      - Interactive Calculator: examples/calculator.md

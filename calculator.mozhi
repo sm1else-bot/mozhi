@@ -1,0 +1,71 @@
+# A simple Calculator in Mozhi
+
+vagai Calculator:
+    seiy initialize(ennoda):
+        ennoda.total = 0 vechukko
+    mudivu
+
+    seiy add(ennoda, val):
+        ennoda.total = ennoda.total + val vechukko
+    mudivu
+
+    seiy subtract(ennoda, val):
+        ennoda.total = ennoda.total - val vechukko
+    mudivu
+
+    seiy multiply(ennoda, val):
+        ennoda.total = ennoda.total * val vechukko
+    mudivu
+
+    seiy divide(ennoda, val):
+        ennoda.total = ennoda.total / val vechukko
+    mudivu
+
+    seiy show(ennoda):
+        "Ippo total: " kooda ennoda.total sollu
+    mudivu
+mudivu
+
+# Main Program
+calc = Calculator porul vechukko
+calc.initialize()
+
+"Mozhi Calculator Ready!" sollu
+"1. Add, 2. Subtract, 3. Multiply, 4. Divide, 5. Show, 6. Podhum" sollu
+
+running = true vechukko
+running varaikum:
+    choice = ketukko("Enna operation? ") vechukko
+    choice = enn(choice) vechukko
+
+    choice == 1 na:
+        val = ketukko("Amount? ") vechukko
+        calc.add(enn(val))
+    illana:
+        choice == 2 na:
+            val = ketukko("Amount? ") vechukko
+            calc.subtract(enn(val))
+        illana:
+            choice == 3 na:
+                val = ketukko("Amount? ") vechukko
+                calc.multiply(enn(val))
+            illana:
+                choice == 4 na:
+                    val = ketukko("Amount? ") vechukko
+                    calc.divide(enn(val))
+                illana:
+                    choice == 5 na:
+                        calc.show()
+                    illana:
+                        choice == 6 na:
+                            running = false vechukko
+                        mudivu
+                    mudivu
+                mudivu
+            mudivu
+        mudivu
+    mudivu
+mudivu
+
+"Bye!" sollu
+podhum
