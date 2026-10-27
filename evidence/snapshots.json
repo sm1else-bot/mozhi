@@ -1,0 +1,182 @@
+{
+  "reconstructionMonth": "2026-10",
+  "meaning": "Retrospective archival Git commits; not original Git history",
+  "archivalCommits": [
+    {
+      "evidenceId": "E01",
+      "commit": "42437b95b3b54a1b483fea1fa1907872e197a978",
+      "tree": "3a92f46daa7f2400cba64f79ee2deb77ff7ab500",
+      "authorDate": "2026-05-31T21:52:50-04:00",
+      "committerDate": "2026-05-31T21:52:50-04:00",
+      "subject": "archive: recover original Lark-based Mozhi interpreter",
+      "files": [
+        {
+          "path": "mozhi.py",
+          "sha256": "2ef5c23c870aba52952e6891bd2a80db39dc6f9f70e8ca7dfd2b8cc997b5a2eb",
+          "sizeBytes": 15111,
+          "originalTimestamp": "2026-06-01T01:52:50.772340Z",
+          "basis": "Completion of recorded create_file input stream; known parser failures; does not date original conception."
+        }
+      ]
+    },
+    {
+      "evidenceId": "E02",
+      "commit": "447bb1973a3d6776ef6e534026c545d333174233",
+      "tree": "3112494f872846aa1ee08e4e819396e4a9e8619a",
+      "authorDate": "2026-05-31T21:54:18-04:00",
+      "committerDate": "2026-05-31T21:54:18-04:00",
+      "subject": "archive: replace Lark parser with recursive-descent interpreter",
+      "files": [
+        {
+          "path": "mozhi.py",
+          "sha256": "97fe0e7c8cb0d9e2c567c3edcb021cd957ada2933b38c9460f1c853b780d87b9",
+          "sizeBytes": 20604,
+          "originalTimestamp": "2026-06-01T01:54:18.645734Z",
+          "basis": "Completion of literal shell-heredoc input stream; native source equals two later saved copies; known loop bug."
+        }
+      ]
+    },
+    {
+      "evidenceId": "E03",
+      "commit": "4cd3b0ec149e39875412676e810fc37720d37473",
+      "tree": "6a9de033e9a2c9ba139bb58064d9acd597e8cfd4",
+      "authorDate": "2026-06-13T01:48:09-04:00",
+      "committerDate": "2026-06-13T01:48:09-04:00",
+      "subject": "archive: preserve expanded Mozhi interpreter",
+      "files": [
+        {
+          "path": "mozhi.py",
+          "sha256": "86a9595cbf1c03646100dd39bde717f0a42f9919416c67be179d3538479175c5",
+          "sizeBytes": 29789,
+          "originalTimestamp": "2026-06-13T05:48:09.7080931Z",
+          "basis": "Conservative bound from complete downloaded snapshot last-write; corroborated by Gemini response source differing only in extra terminal newline. Not a feature-discussion timestamp or authenticated generation time."
+        }
+      ]
+    },
+    {
+      "evidenceId": "E04",
+      "commit": "5f67d601c6f6664479afa03fd9db4abba0fd60cb",
+      "tree": "ace66821b670b785f8309bf7ed785d2ba8164d71",
+      "authorDate": "2026-06-13T02:26:01-04:00",
+      "committerDate": "2026-06-13T02:26:01-04:00",
+      "subject": "archive: preserve browser playground and interactive runtime",
+      "files": [
+        {
+          "path": "mozhionline.html",
+          "sha256": "c3a6edc1251d0632410dea5f213c37c2ebe6ca9302af0ce2eb7f67a3f2f48e00",
+          "sizeBytes": 33939,
+          "originalTimestamp": "2026-06-13T06:26:01.3559436Z",
+          "basis": "Verified current bytes and filesystem last-write corroborated by saved final Antigravity diff. Not earlier creation time."
+        }
+      ]
+    },
+    {
+      "evidenceId": "E05",
+      "commit": "25e16453d0723b0302de6d7d64b989806ba979e5",
+      "tree": "a3f925a5090ff7748532657955c179988a350e3e",
+      "authorDate": "2026-06-13T02:34:31-04:00",
+      "committerDate": "2026-06-13T02:34:31-04:00",
+      "subject": "archive: preserve original documentation and examples",
+      "files": [
+        {
+          "path": "calculator.mozhi",
+          "sha256": "7ccf87031344feff73eab09400d683b89bd853bfd5cc30ef44ad6fdc680a7997",
+          "sizeBytes": 1820,
+          "originalTimestamp": "2026-06-13T06:19:05.9332023Z",
+          "basis": "Verified original documentation/example snapshot; source last-write, grouped with documented creation sequence"
+        },
+        {
+          "path": "demo.mozhi",
+          "sha256": "120e8583cf93b0244d5548551b8d9395991436b93e86b2be38ad34e8d964ff0b",
+          "sizeBytes": 253,
+          "originalTimestamp": "2026-06-13T06:09:51.2074464Z",
+          "basis": "Verified original documentation/example snapshot; source last-write, grouped with documented creation sequence"
+        },
+        {
+          "path": "docs/advanced/arrays.md",
+          "sha256": "abb9d2bba7a362e5646f392b29894db87ae19a4e56a4bf17b4400a31ccf57b2e",
+          "sizeBytes": 1585,
+          "originalTimestamp": "2026-06-13T06:34:24.7782088Z",
+          "basis": "Verified original documentation/example snapshot; source last-write, grouped with documented creation sequence"
+        },
+        {
+          "path": "docs/advanced/oop.md",
+          "sha256": "39454b650ceaa2988a4840b86ec11990b699afa0d21c60f005c6fec45fcc1484",
+          "sizeBytes": 2215,
+          "originalTimestamp": "2026-06-13T06:34:28.2050439Z",
+          "basis": "Verified original documentation/example snapshot; source last-write, grouped with documented creation sequence"
+        },
+        {
+          "path": "docs/basics/io.md",
+          "sha256": "58a3870a442b9ffa68207ec9d35978c51e9cb11822ddc63fed3beb23a9dd1a83",
+          "sizeBytes": 1671,
+          "originalTimestamp": "2026-06-13T06:34:16.9309248Z",
+          "basis": "Verified original documentation/example snapshot; source last-write, grouped with documented creation sequence"
+        },
+        {
+          "path": "docs/basics/variables.md",
+          "sha256": "c641aa226f8bd5a4e7cddbc20af5f54a56c78da7ec3b5d8a64a580856ea0f2be",
+          "sizeBytes": 1739,
+          "originalTimestamp": "2026-06-13T06:34:14.5512017Z",
+          "basis": "Verified original documentation/example snapshot; source last-write, grouped with documented creation sequence"
+        },
+        {
+          "path": "docs/control-flow/conditionals.md",
+          "sha256": "0557fe3d2b0715c376e4d0ccde1c93c7876a06b8885d5ad015407d4052bf4164",
+          "sizeBytes": 1801,
+          "originalTimestamp": "2026-06-13T06:34:19.5769842Z",
+          "basis": "Verified original documentation/example snapshot; source last-write, grouped with documented creation sequence"
+        },
+        {
+          "path": "docs/control-flow/loops.md",
+          "sha256": "e9b30a0862aae466da187a392635a53d1cdc80cd0d4be7db0cae56df33e58c7a",
+          "sizeBytes": 1726,
+          "originalTimestamp": "2026-06-13T06:34:21.9798026Z",
+          "basis": "Verified original documentation/example snapshot; source last-write, grouped with documented creation sequence"
+        },
+        {
+          "path": "docs/examples/calculator.md",
+          "sha256": "cddd72cae67b0ca0af6c28464a7b30597791fbf4c9b45f06f79d233abafc9b5d",
+          "sizeBytes": 3230,
+          "originalTimestamp": "2026-06-13T06:34:31.0597954Z",
+          "basis": "Verified original documentation/example snapshot; source last-write, grouped with documented creation sequence"
+        },
+        {
+          "path": "docs/index.md",
+          "sha256": "9c992821ab288ae5fd769a8a9879c3292ee3163651a71a474805daa3aef8acb5",
+          "sizeBytes": 1542,
+          "originalTimestamp": "2026-06-13T06:34:12.1938722Z",
+          "basis": "Verified original documentation/example snapshot; source last-write, grouped with documented creation sequence"
+        },
+        {
+          "path": "gossip.mozhi",
+          "sha256": "7b63ffbdbb14b3a5925dddaa03b833087e153406871c2fd4906d41daa80392e1",
+          "sizeBytes": 1164,
+          "originalTimestamp": "2026-06-13T06:14:59.6839565Z",
+          "basis": "Verified original documentation/example snapshot; source last-write, grouped with documented creation sequence"
+        },
+        {
+          "path": "library.mozhi",
+          "sha256": "de5ebd3aa6bc788eb94e478dec4af1ba04a428a7b0399d3929f5108eef068198",
+          "sizeBytes": 897,
+          "originalTimestamp": "2026-06-13T06:09:17.1042686Z",
+          "basis": "Verified original documentation/example snapshot; source last-write, grouped with documented creation sequence"
+        },
+        {
+          "path": "mkdocs.yml",
+          "sha256": "a27545446ef7edc9bba31bfa57d10a0c3f8488545874ecb1ff549e0e65b01516",
+          "sizeBytes": 1224,
+          "originalTimestamp": "2026-06-13T06:34:09.7607076Z",
+          "basis": "Verified original documentation/example snapshot; source last-write, grouped with documented creation sequence"
+        },
+        {
+          "path": "README.md",
+          "sha256": "54f0d1efa5d52955e7542c0dad6c69fc208ce0d2cee6e7190d90e69b055deb5a",
+          "sizeBytes": 814,
+          "originalTimestamp": "2026-06-13T06:34:07.3783610Z",
+          "basis": "Verified original documentation/example snapshot; source last-write, grouped with documented creation sequence"
+        }
+      ]
+    }
+  ]
+}

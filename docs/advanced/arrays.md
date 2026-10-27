@@ -37,7 +37,7 @@ Removes the last element from the list.
 
 #### Syntax
 ```text
-veliyapodu array_variable
+array_variable veliyapodu
 ```
 
 ---
@@ -66,7 +66,7 @@ fruits sollu
 scores = [100, 200, 300] vechukko
 
 # Remove the last item (300)
-veliyapodu scores
+scores veliyapodu
 
 # Prints [100, 200]
 scores sollu

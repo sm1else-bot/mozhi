@@ -1,5 +1,7 @@
 # Vanakkam! Welcome to Mozhi Documentation
 
+> These examples describe the preserved browser runtime. The earlier CLI has different input naming and known scope/OOP bugs. See the repository README and LANGUAGE.md for the runtime comparison.
+
 **Mozhi** is a unique, Tanglish-based object-oriented programming language designed to bridge conversational dialogue with structural code mechanics. By adopting common Tamil-English colloquial phrases, Mozhi provides a programming experience that feels responsive, logical, and deeply familiar.
 
 ---

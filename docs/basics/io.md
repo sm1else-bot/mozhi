@@ -1,5 +1,7 @@
 # Input and Output (I/O)
 
+The browser uses `ketukko`; the earlier CLI uses `kelu`. Input returns strings in both runtimes.
+
 Mozhi provides clean, human-readable keywords to print statements to the screen (`sollu`) and fetch input from the user (`ketukko`).
 
 ---
