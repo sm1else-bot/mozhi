@@ -10,7 +10,7 @@ a = 10 vechukko
 
 Mozhi explores grammar as well as vocabulary. `sollu` (say) follows the expression, `vechukko` (keep/store) closes an assignment, and conditions precede `na` or `varaikum`. Assignment still uses infix `=`, so this is a hybrid syntax rather than a fully postfix stack language. Tamil has many dialects and constructions; Mozhi is an experiment, not a complete model of Tamil grammar.
 
-**Historical note:** Mozhi was conceived on May 31, 2026, and developed further in June 2026. This repository was prepared in October 2026 for its first public publication, which is pending approval. Its early Git commits are retrospectively dated archival reconstructions from recovered source files and development records, not original commits made at that time. See [PROVENANCE.md](PROVENANCE.md) for methodology and evidence.
+**Historical note:** Mozhi was conceived on May 31, 2026, and developed further in June 2026. This GitHub repository was first published on October 27, 2026. Its early Git commits are retrospectively dated archival reconstructions from recovered source files and development records, not original commits made at that time. See [PROVENANCE.md](PROVENANCE.md) for methodology and evidence.
 
 ## Status
 

@@ -16,7 +16,7 @@ All local dates below use EDT (UTC-04:00). The native records use UTC, so May 31
 | June 13, 02:34–02:38 | Documentation source is generated and MkDocs is built. |
 | June 15 | Further Gemini discussion revisits grammatical consistency. These discussions are not imported as a finished source version. |
 | October 27, 2026 | Local archaeology recovers structured conversations, source inputs, Takeout attachments, saved files and patches. The archival Git history and modern repository are prepared. |
-| October 2026, pending approval | Intended first public repository publication. Preparation is not publication; no earlier public Git history is claimed. |
+| October 27, 2026, 02:52:44 EDT | First public GitHub repository created (`2026-10-27T06:52:44Z`). The reconstructed history was published that day; no earlier public Git history is claimed. |
 
 The author's language concept was developed with AI implementation assistance, initially Claude and then Gemini/Google Antigravity. One preserved test result contains 500,000 lines of `1`; this records a bug, not a successful test. Historical code is retained with its failures. The project does not claim priority over other independent languages or allege copying.
 

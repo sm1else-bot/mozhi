@@ -65,7 +65,7 @@ Modern commits use actual October creation times. They add the layout, README, l
 
 Public references E01–E05 identify evidence categories without private conversation IDs, personal absolute paths, full transcripts, account data, databases or Takeout archives. No private raw evidence is included. Historical sample first names in documentation are illustrative code, not an exported contact list. Externally loaded frontend libraries are referenced by the original HTML, not vendored into this repository.
 
-First public publication is planned for October 2026 and has not yet occurred at preparation. The GitHub repository creation date will reflect actual publication; older archival commit timestamps are not proof that a GitHub repository existed then. No historical release tags or public priority claims are made. The author explicitly chose MIT for this release.
+This GitHub repository was first published on October 27, 2026, with repository creation recorded at `2026-10-27T06:52:44Z` (02:52:44 EDT). The repository creation date reflects actual publication; older archival commit timestamps are not proof that a GitHub repository existed then. No historical release tags or public priority claims are made. The author explicitly chose MIT for this release.
 
 ## Commit-subject revision
 
