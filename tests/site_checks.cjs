@@ -27,6 +27,14 @@ const server = http.createServer((req, res) => {
         const errors = [];page.on('pageerror', error => errors.push(error.message));
         const base = `http://127.0.0.1:${server.address().port}/mozhi`;
         await page.goto(base + '/playground/');
+        const checkNav = async () => {
+            const centers = await page.locator('.topnav .nav-button').evaluateAll(items => items.map(item => {
+                const range = document.createRange();range.selectNodeContents(item);
+                const rect = range.getBoundingClientRect();return rect.top + rect.height / 2;
+            }));
+            assert.ok(Math.max(...centers) - Math.min(...centers) < 2, 'Navigation text must align');
+        };
+        await checkNav();
         await page.locator('#nav-learn').click();await page.waitForURL('**/learn/');
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
         await page.goto(base + '/learn/basics/variables/');
@@ -38,6 +46,7 @@ const server = http.createServer((req, res) => {
         assert.equal(await page.locator('#guide-panel').isVisible(), true);
         console.log('PASS combined website navigation, nested documentation links, gallery and Studio lessons');
         await page.setViewportSize({width:390,height:844});
+        await checkNav();
         await page.locator('#nav-learn').click();await page.waitForURL('**/learn/');
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
         await page.locator('label[for="__search"]').first().click();

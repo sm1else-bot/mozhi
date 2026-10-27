@@ -25,7 +25,18 @@ const server = http.createServer((req,res) => {
     const pass=name=>{results.push({name,passed:true});console.log('PASS '+name);};
     const ready=()=>page.waitForFunction(()=>!document.getElementById('run-btn').disabled,null,{timeout:90000});
     const done=()=>page.waitForFunction(()=>['Finished','Finished with an error'].includes(document.getElementById('status').textContent));
+    async function checkNavigationAlignment(target) {
+        const metrics=await target.locator('.topnav .nav-button').evaluateAll(items=>items.map(item=>{
+            const range=document.createRange();range.selectNodeContents(item);
+            const box=range.getBoundingClientRect();
+            return {center:box.top+box.height/2,decoration:getComputedStyle(item).textDecorationLine};
+        }));
+        assert.equal(metrics.length,3);
+        assert.ok(Math.max(...metrics.map(m=>m.center))-Math.min(...metrics.map(m=>m.center))<2,'Studio, Learn and Examples text must share a vertical center');
+        assert.equal(metrics[1].decoration,'none','Learn must retain the navigation styling');
+    }
     await page.goto(url);await ready();
+    await checkNavigationAlignment(page);
     assert.equal(await page.locator('.lesson-item').count(),8);
     assert.equal(await page.locator('#course-progress').getAttribute('aria-valuenow'),'0');
     assert.ok(await page.locator('.cm-string').count()>0);
@@ -124,6 +135,7 @@ const server = http.createServer((req,res) => {
     const mobile=await browser.newPage({viewport:{width:390,height:844}});
     await mobile.goto(url);await mobile.waitForFunction(()=>!document.getElementById('run-btn').disabled,null,{timeout:90000});
     assert.equal(await mobile.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+    await checkNavigationAlignment(mobile);
     await mobile.locator('#sidebar-toggle').click();assert.equal(await mobile.locator('#learning-sidebar').isVisible(),true);
     await mobile.locator('[data-lesson="arrays"]').click();
     assert.equal(await mobile.locator('#learning-sidebar').isHidden(),true);
