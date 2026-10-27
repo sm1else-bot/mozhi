@@ -6,7 +6,7 @@ This example demonstrates a complete, interactive terminal-based Calculator app 
 
 ## The Calculator Code
 
-Paste the following code into the Mozhi playground and click **Run Mozhi**:
+From the repository root, run `python src/mozhi.py examples/calculator.mozhi`, or paste the following code into the playground and click **Run Mozhi**. The input sequence `1`, `10`, `5`, `6` adds ten, shows the total, and exits the menu.
 
 ```text
 # A simple Calculator in Mozhi
@@ -97,3 +97,5 @@ The menu remains active inside `running varaikum:`. The loop runs continuously u
 
 ### 4. Interactive Prompts (`ketukko`)
 The program prompts for selections and operands using `ketukko`. The inputs are returned as strings, which are then explicitly cast to numbers using the `enn()` builtin function so that addition is performed arithmetically instead of concatenating strings.
+
+`kelu` is an equivalent input alias. Browser input waits pause the execution timer; use Enter or the input button to resume. The example does not validate menu choices, catch invalid numeric conversions, or prevent division by zero. Those failures stop the run with a line-numbered error; correct the input and start a new run. The final `podhum` ends the program in either adapter.

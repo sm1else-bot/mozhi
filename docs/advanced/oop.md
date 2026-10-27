@@ -16,7 +16,7 @@ mudivu
 ```
 
 ### Description
-The interpreter registers `ClassName` in the current scope as a `MozhiClass` entity. All methods defined inside the class are parsed and stored as bound closures.
+The interpreter registers `ClassName` in the current scope as a `MozhiClass` entity. Each method retains the environment in which the class was defined; its first parameter is bound to the object when called. Method parameters are local and do not overwrite outer variables of the same name.
 
 ---
 
@@ -37,6 +37,8 @@ object_variable = ClassName porul vechukko
 * **`naan`**: The first parameter of any class method represents the current object instance (equivalent to `self` in Python or `this` in JavaScript). By convention, we name it `naan` ("me/myself").
 * **Properties**: Instance fields are assigned inside methods using dot syntax (e.g., `naan.attribute = value vechukko`).
 * **Dot Notation**: Attributes and methods are accessed using the dot (`.`) operator (e.g., `instance.method()` or `instance.attribute`).
+
+Initializers are ordinary methods and must be called explicitly after `ClassName porul`. Method parameter names must be unique, a method needs an instance parameter, and calls must supply the declared number of arguments. Missing properties and methods produce line-numbered errors in both adapters.
 
 ---
 

@@ -53,8 +53,8 @@ The machine-readable [snapshot index](evidence/snapshots.json) contains full UTC
 
 | Historical Git path | Current path |
 | --- | --- |
-| `mozhi.py` | `src/mozhi.py` (expanded snapshot unchanged) |
-| `mozhionline.html` | `playground/index.html` (browser source unchanged) |
+| `mozhi.py` | `src/mozhi.py` (later modern runtime fixes; exact expanded snapshot remains in E03) |
+| `mozhionline.html` | `playground/` (later worker UI and generated runtime; exact HTML remains in E04) |
 | Four root `.mozhi` examples | `examples/` (unchanged) |
 | Original README and Markdown docs | Original versions in archival commits; current README replaced and docs corrected in October |
 | Generated MkDocs site | Omitted from Git; retained privately in the forensic archive |
@@ -70,3 +70,7 @@ This GitHub repository was first published on October 27, 2026, with repository 
 ## Commit-subject revision
 
 In October 2026, the six initial subjects were revised for readability. Each rewritten commit retains its exact source tree and byte-identical author/committer identity and timestamp headers. Only messages and necessarily parent references changed. This provenance refresh is a separate current-dated commit. The archival IDs above refer to the revised sequence.
+
+## Later runtime repairs
+
+After publication, modern work fixes scope, OOP, termination, operators and diagnostics, and moves playground execution into a terminable worker. The browser language engine is now generated from the core source with an asynchronous adapter. None of these fixes is backdated: E01–E05 retain their original bytes and remain the source of the historical SHA-256 values above. Current source hashes are expected to differ from those archival snapshots.

@@ -33,9 +33,11 @@ markdown_extensions:
 
 nav:
   - Welcome: index.md
+  - Running Mozhi: runtime.md
   - Basics:
-      - Variables & Constants: basics/variables.md
+      - Variables: basics/variables.md
       - Input & Output: basics/io.md
+      - Operators: basics/operators.md
   - Control Flow:
       - Conditionals: control-flow/conditionals.md
       - Loops: control-flow/loops.md
@@ -44,3 +46,4 @@ nav:
       - Object-Oriented (OOP): advanced/oop.md
   - Examples:
       - Interactive Calculator: examples/calculator.md
+  - Errors & Validation: errors.md

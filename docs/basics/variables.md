@@ -1,4 +1,6 @@
-# Variables and Constants
+# Variables
+
+Mozhi currently has mutable variables; it does not provide a separate constant-declaration construct.
 
 In Mozhi, variables are declared and updated using a trailing assignment style that utilizes the `vechukko` keyword. This corresponds to saying *"keep/store this"* in conversational Tanglish.
 
