@@ -1,6 +1,6 @@
 # Input and Output (I/O)
 
-The browser uses `ketukko`; the earlier CLI uses `kelu`. Input returns strings in both runtimes.
+Both `ketukko` and `kelu` are input aliases in the CLI and browser. Input returns strings in both adapters. The browser waits asynchronously and pauses its execution budget while waiting.
 
 Mozhi provides clean, human-readable keywords to print statements to the screen (`sollu`) and fetch input from the user (`ketukko`).
 

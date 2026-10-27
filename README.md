@@ -14,11 +14,11 @@ Mozhi explores grammar as well as vocabulary. `sollu` (say) follows the expressi
 
 ## Status
 
-This is an experimental archival release. Two preserved interpreter stages are available: an earlier Python CLI and a later browser runtime. Their behavior differs. Neither is production-ready, Python-compatible, or a sandbox for untrusted code. Language repairs and packaging will follow separately.
+This is an experimental language with an explicitly preserved archival history. The current CLI and browser adapters share parser/runtime fixes through generated browser code. Neither is production-ready, Python-compatible, or a sandbox for untrusted code. Original interpreter stages remain unchanged in the archival commits.
 
 ## Run the CLI
 
-Use Python 3; repository checks currently run on Python 3.13. The current CLI uses only the standard library and needs no pip install.
+Use Python 3.10 or later. The CLI uses only the standard library and needs no pip install.
 
 ```sh
 python src/mozhi.py examples/hello.mozhi
@@ -32,7 +32,7 @@ Vanakkam, world!
 Value: 10
 ```
 
-There is no installed `mozhi` command or packaged REPL yet. Always pass an explicit file: invoking the CLI without a filename runs its historical built-in demo, whose loop can fail to terminate. The four preserved June examples target the later browser runtime.
+There is no installed `mozhi` command or packaged REPL yet. Invoking the CLI without a filename (or with `--example`) runs the built-in demo. All five programs in `examples/` now work with the CLI and browser; the calculator requests interactive input.
 
 ## Use the playground
 
@@ -44,30 +44,50 @@ python -m http.server 8000
 
 Open [the playground locally](http://localhost:8000/playground/). Wait for **Run Mozhi**, paste code, and run it. For the historical programs, copy the contents of `examples/demo.mozhi`, `library.mozhi`, `gossip.mozhi`, or `calculator.mozhi` into the editor. Calculator inputs 1, 10, 5, 6 add ten, show it, and exit the menu.
 
-CodeMirror 5.65.13 and Pyodide 0.23.4 load from external CDNs. First loading needs network access. The playground uses plain-text editing, not dedicated Mozhi syntax highlighting. Stop the local server with Ctrl+C. The runtime has no execution budget or Stop button; a nonterminating program can freeze its browser tab.
+CodeMirror 5.65.13 and Pyodide 0.23.4 load from external CDNs. First loading needs network access. The playground uses plain-text editing, not dedicated Mozhi syntax highlighting. A plain textarea remains usable if CodeMirror fails to load. Stop the local server with Ctrl+C.
+
+Programs execute in a worker. **Stop** terminates even a tight infinite loop, and a configurable execution limit defaults to **10 seconds** (0.1–3600 seconds). Waiting for user input pauses the timer; submitting input resumes the remaining budget. Stopping or timing out cancels pending input and creates a fresh engine. Engine-load failures expose **Retry engine**. Output is capped at 65,536 JavaScript characters to keep runaway printing responsive. This is a usability limit, not a security sandbox.
 
 ## Implemented features and differences
 
-| Feature | CLI snapshot | Browser snapshot |
+| Feature | CLI adapter | Browser adapter |
 | --- | --- | --- |
 | Numbers, strings, booleans, arithmetic, conditions | Present | Present |
 | Functions and return | Present | Present |
 | Arrays, indexing, push/pop | Present | Present |
-| Loops and outer-variable updates | Known scoping bug | Parent-scope fix present |
-| Classes and methods | Incomplete; closure handling is broken | Property assignment and methods supported |
-| Input | Synchronous `kelu(...)` | Asynchronous `ketukko(...)` |
+| Loops and outer-variable updates | Fixed; updates find the defining scope | Same semantics |
+| Classes and methods | Properties, bound instances, method closures | Same semantics |
+| Input | Synchronous `kelu(...)` or `ketukko(...)` | Both aliases, asynchronously awaited |
 | Length and conversion | `neelam`, `enn`, `padam`, `vaari` | Same names |
-| `podhum` | Exits the CLI process | Prints a message; does not halt execution |
+| `podhum` | Terminates the current program, including nested calls | Same semantics; engine remains reusable |
 
-See [LANGUAGE.md](LANGUAGE.md) for the supported syntax and [the documentation source](docs/index.md) for examples. The browser embeds a separate Python interpreter; it does not import `src/mozhi.py`. This preparation keeps both actual stages instead of claiming they are identical.
+See [LANGUAGE.md](LANGUAGE.md) for the supported syntax and [the documentation source](docs/index.md) for examples. The browser runs a generated asynchronous adapter, `playground/runtime.py`, in Pyodide. `tools/sync_playground.py` generates its parser/runtime from `src/mozhi.py`; input/output adapters differ, but language fixes are kept together. After changing the core, run `python tools/sync_playground.py`. A regression check detects a stale generated artifact.
 
 ## Known limitations
 
-- The CLI's child-scope assignment bug can make loops infinite. Its OOP implementation lacks the later property and closure fixes. Use the playground for the four historical examples.
-- `**` is recognized after `*` by the tokenizer and fails to parse as exponentiation. Boolean operators evaluate both operands. Indentation/error handling and function argument validation need work.
-- Constructors are called manually after `ClassName porul`. Missing properties and invalid numeric input produce runtime errors; the calculator does not guard against division by zero.
-- Browser execution blocks the main thread for programs without asynchronous input. Concurrent Run clicks and engine-load failures are not managed robustly.
-- No imports/package ecosystem, standard library collection, compatibility guarantee, packaged installer, dedicated highlighter, or official GitHub Linguist recognition is included.
+- This is still an experimental language, not full Python compatibility. Constructors are called manually after `ClassName porul`; indexed assignment and module imports are not implemented.
+- Errors now report source statement lines and validate indentation, argument counts, array indices, properties, input conversion and control-flow placement. There is no exception-handling syntax for recovering within a Mozhi program yet.
+- The browser limit measures elapsed execution time outside input waits, not CPU instructions. A stopped worker must reload Pyodide. Extremely memory-hungry programs are not safely sandboxed. CLI execution remains unbounded; use Ctrl+C or an external process timeout for intentional endless programs.
+- No module/package ecosystem, standard library collection, compatibility guarantee, packaged installer, dedicated highlighter, or official GitHub Linguist recognition is included.
+
+## Runtime checks
+
+The Python suite runs language regressions against both the synchronous CLI and generated asynchronous browser adapter in bounded subprocesses:
+
+```sh
+python tools/sync_playground.py
+python -m unittest discover -s tests -v
+```
+
+Optional actual-browser checks require Node.js 20 or later, network access, and Playwright's isolated Chromium:
+
+```sh
+npm ci
+npx playwright install chromium
+npm run test:browser
+```
+
+`MOZHI_TEST_BROWSER` may name an existing Chrome/Chromium executable instead of the Playwright download. The checks use a fresh temporary profile, exercise worker Stop/timeout/recovery and input pauses, and do not operate your personal browser session.
 
 ## Documentation
 
@@ -77,11 +97,11 @@ python -m mkdocs serve
 python -m mkdocs build --strict
 ```
 
-The generated `site/` is ignored. The current docs correct a historical array-pop syntax error and identify runtime-specific behavior; exact original docs remain in the archival commits.
+The generated `site/` is ignored. The docs cover [runtime controls](docs/runtime.md), [operators](docs/basics/operators.md), and [error handling](docs/errors.md). Exact original documentation remains in the archival commits.
 
 ## Roadmap and contributions
 
-First: a shared language specification, bounded execution, runtime regression coverage, and deliberate convergence of CLI/browser behavior. Next: a CLI/REPL package, syntax highlighting and editor integration, then modules and packaging. Official Linguist recognition is a future milestone; `.mozhi` files are not relabeled as Python.
+Next: a fuller language specification, deeper runtime coverage, a CLI/REPL package, syntax highlighting and editor integration, then modules and packaging. Official Linguist recognition is a future milestone; `.mozhi` files are not relabeled as Python.
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md) before proposing changes. The language concept and syntax were directed by the project author; implementation was AI-assisted with Claude, then Gemini and Google Antigravity. These tools assisted development rather than independently originating the author's language idea.
 

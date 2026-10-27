@@ -49,13 +49,20 @@ def tokenize(source: str):
         if not stripped or stripped.startswith('#'):
             continue
 
-        indent = len(line) - len(line.lstrip())
+        prefix = line[:len(line) - len(line.lstrip())]
+        if ' ' in prefix and '\t' in prefix:
+            raise SyntaxError(f"[Mozhi] Line {lineno}: Do not mix tabs and spaces in indentation.")
+        indent = len(prefix.expandtabs(4))
         current_indent = indent_stack[-1]
 
         if indent > current_indent:
+            if not tokens or tokens[-2].type != TT_COLON:
+                raise SyntaxError(f"[Mozhi] Line {lineno}: Unexpected indentation; a block must follow ':'.")
             indent_stack.append(indent)
             tokens.append(Token(TT_INDENT, indent, lineno))
         elif indent < current_indent:
+            if indent not in indent_stack:
+                raise SyntaxError(f"[Mozhi] Line {lineno}: Indentation does not match an outer block.")
             while indent_stack[-1] > indent:
                 indent_stack.pop()
                 tokens.append(Token(TT_DEDENT, indent, lineno))
@@ -63,7 +70,7 @@ def tokenize(source: str):
         content = stripped
         col = 0
         while col < len(content):
-            if content[col] == ' ':
+            if content[col].isspace():
                 col += 1
                 continue
 
@@ -74,15 +81,19 @@ def tokenize(source: str):
             if content[col] in ('"', "'"):
                 q = content[col]
                 end = col + 1
-                while end < len(content):
-                    if content[end] == q and content[end-1] != '\\':
-                        break
-                    end += 1
-                
+                chars = []
+                escapes = {'n': '\n', 't': '\t', '\\': '\\', '"': '"', "'": "'"}
+                while end < len(content) and content[end] != q:
+                    if content[end] == '\\' and end + 1 < len(content):
+                        escaped = content[end + 1]
+                        chars.append(escapes.get(escaped, '\\' + escaped))
+                        end += 2
+                    else:
+                        chars.append(content[end])
+                        end += 1
                 if end >= len(content):
-                     raise SyntaxError(f"[Mozhi] Line {lineno}: String a close panniya da? Missing closing quote.")
-                
-                val = content[col+1:end].replace('\\n', '\n').replace('\\t', '\t').replace('\\"', '"').replace("\\'", "'")
+                    raise SyntaxError(f"[Mozhi] Line {lineno}: Missing closing quote.")
+                val = ''.join(chars)
                 tokens.append(Token(TT_STRING, val, lineno))
                 col = end + 1
                 continue
@@ -96,7 +107,7 @@ def tokenize(source: str):
                 continue
 
             # Operators
-            for op in ('==', '!=', '<=', '>=', '<', '>', '+', '-', '*', '/', '%', '=', '**'):
+            for op in ('==', '!=', '<=', '>=', '**', '<', '>', '+', '-', '*', '/', '%', '='):
                 if content[col:].startswith(op):
                     tokens.append(Token(TT_OP, op, lineno))
                     col += len(op)
@@ -134,7 +145,7 @@ def tokenize(source: str):
         indent_stack.pop()
         tokens.append(Token(TT_DEDENT, 0, 0))
 
-    tokens.append(Token(TT_EOF, None, 0))
+    tokens.append(Token(TT_EOF, None, len(lines) or 1))
     return tokens
 
 # ─────────────────────────────────────────────
@@ -210,6 +221,13 @@ class MethodCall:
 class FuncCall:
     def __init__(self, name, args): self.name = name; self.args = args
 
+class PropertyAccess:
+    def __init__(self, obj_expr, name): self.obj_expr = obj_expr; self.name = name
+
+class PropertyAssign:
+    def __init__(self, obj_name, prop_name, expr):
+        self.obj_name = obj_name; self.prop_name = prop_name; self.expr = expr
+
 # ─────────────────────────────────────────────
 # PARSER
 # ─────────────────────────────────────────────
@@ -220,7 +238,7 @@ class Parser:
         self.pos = 0
 
     def peek(self):
-        return self.tokens[self.pos]
+        return self.tokens[min(self.pos, len(self.tokens) - 1)]
 
     def peek2(self):
         if self.pos + 1 < len(self.tokens):
@@ -228,7 +246,7 @@ class Parser:
         return Token(TT_EOF, None)
 
     def consume(self, type_=None, value=None):
-        tok = self.tokens[self.pos]
+        tok = self.peek()
         if type_ and tok.type != type_:
             raise SyntaxError(f"[Mozhi] Line {tok.line}: Expected {type_}, got {tok.type} ({tok.value!r})")
         if value and tok.value != value:
@@ -259,6 +277,12 @@ class Parser:
         return stmts
 
     def parse_stmt(self):
+        line = self.peek().line
+        node = self._parse_stmt()
+        node.line = line
+        return node
+
+    def _parse_stmt(self):
         tok = self.peek()
 
         if tok.type == TT_KEYWORD and tok.value == 'seiy':
@@ -281,6 +305,19 @@ class Parser:
             self.consume()
             self.consume(TT_NEWLINE)
             return Exit()
+
+        if (tok.type == TT_NAME and self.peek2().type == TT_DOT
+                and self.pos + 3 < len(self.tokens)
+                and self.tokens[self.pos + 2].type == TT_NAME
+                and self.tokens[self.pos + 3].value == '='):
+            obj_name = self.consume(TT_NAME).value
+            self.consume(TT_DOT)
+            prop_name = self.consume(TT_NAME).value
+            self.consume(TT_OP, '=')
+            expr = self.parse_expr()
+            self.consume(TT_KEYWORD, 'vechukko')
+            self.consume(TT_NEWLINE)
+            return PropertyAssign(obj_name, prop_name, expr)
 
         if tok.type == TT_NAME and self.peek2().type == TT_OP and self.peek2().value == '=':
             return self.parse_assign()
@@ -366,6 +403,8 @@ class Parser:
                 self.consume(TT_COMMA)
                 params.append(self.consume(TT_NAME).value)
         self.consume(TT_RPAREN)
+        if len(set(params)) != len(params):
+            raise SyntaxError(f"[Mozhi] Line {self.peek().line}: Duplicate parameter in '{name}'.")
         self.consume(TT_COLON)
         self.consume(TT_NEWLINE)
         body = self.parse_block()
@@ -434,26 +473,24 @@ class Parser:
         return left
 
     def parse_mul(self):
-        left = self.parse_pow()
+        left = self.parse_unary()
         while self.peek().type == TT_OP and self.peek().value in ('*', '/', '%'):
             op = self.consume().value
-            right = self.parse_pow()
-            left = BinOp(left, op, right)
+            left = BinOp(left, op, self.parse_unary())
         return left
 
     def parse_pow(self):
-        left = self.parse_unary()
-        while self.peek().type == TT_OP and self.peek().value == '**':
-            op = self.consume().value
-            right = self.parse_unary()
-            left = BinOp(left, op, right)
+        left = self.parse_primary()
+        if self.peek().type == TT_OP and self.peek().value == '**':
+            self.consume()
+            return BinOp(left, '**', self.parse_unary())
         return left
 
     def parse_unary(self):
-        if self.peek().type == TT_OP and self.peek().value == '-':
-            self.consume()
-            return UnaryOp('-', self.parse_unary())
-        return self.parse_primary()
+        if self.peek().type == TT_OP and self.peek().value in ('-', '+'):
+            op = self.consume().value
+            return UnaryOp(op, self.parse_unary())
+        return self.parse_pow()
 
     def parse_primary(self):
         tok = self.peek()
@@ -519,15 +556,18 @@ class Parser:
                 elif self.peek().type == TT_DOT:
                     self.consume(TT_DOT)
                     method_name = self.consume(TT_NAME).value
-                    self.consume(TT_LPAREN)
-                    args = []
-                    if self.peek().type != TT_RPAREN:
-                        args.append(self.parse_expr())
-                        while self.peek().type == TT_COMMA:
-                            self.consume(TT_COMMA)
+                    if self.peek().type == TT_LPAREN:
+                        self.consume(TT_LPAREN)
+                        args = []
+                        if self.peek().type != TT_RPAREN:
                             args.append(self.parse_expr())
-                    self.consume(TT_RPAREN)
-                    node = MethodCall(node, method_name, args)
+                            while self.peek().type == TT_COMMA:
+                                self.consume(TT_COMMA)
+                                args.append(self.parse_expr())
+                        self.consume(TT_RPAREN)
+                        node = MethodCall(node, method_name, args)
+                    else:
+                        node = PropertyAccess(node, method_name)
                 else:
                     break
             
@@ -552,6 +592,12 @@ class Environment:
         raise NameError(f"[Mozhi] Variable '{name}' illa da! Add it first using 'vechukko'")
 
     def set(self, name, value):
+        scope = self
+        while scope is not None:
+            if name in scope.vars:
+                scope.vars[name] = value
+                return
+            scope = scope.parent
         self.vars[name] = value
 
 class MozhiFunction:
@@ -584,202 +630,214 @@ class BreakSignal(Exception):
 class ContinueSignal(Exception):
     pass
 
+class ExitSignal(Exception): pass
+
+class MozhiError(Exception):
+    """A user-facing runtime failure with the source statement's line."""
+    def __init__(self, message, line):
+        self.line = line
+        self.detail = str(message).removeprefix('[Mozhi] ')
+        super().__init__(f"[Mozhi] Line {line}: {self.detail}")
+
 CMP = {'==': operator.eq, '!=': operator.ne, '<': operator.lt,
        '>': operator.gt, '<=': operator.le, '>=': operator.ge}
 
+def read_input(args):
+    return input(str(args[0]) if args else '')
+
 BUILTINS = {
-    'kelu':     lambda args: input(str(args[0]) if args else ''),
-    'neelam':   lambda args: len(args[0]),
-    'enn':      lambda args: int(args[0]),
-    'padam':    lambda args: float(args[0]),
-    'vaari':    lambda args: str(args[0]),
+    'kelu': read_input,
+    'ketukko': read_input,
+    'neelam': lambda args: len(args[0]),
+    'enn': lambda args: int(args[0]),
+    'padam': lambda args: float(args[0]),
+    'vaari': lambda args: str(args[0]),
 }
+BUILTIN_ARITY = {'kelu': (0, 1), 'ketukko': (0, 1),
+                 'neelam': (1, 1), 'enn': (1, 1), 'padam': (1, 1), 'vaari': (1, 1)}
 
 class Interpreter:
+    def __init__(self):
+        self.loop_depth = 0
+        self.function_depth = 0
+
     def exec_block(self, stmts, env):
         for stmt in stmts:
             self.exec(stmt, env)
 
     def exec(self, node, env):
+        try:
+            self._exec(node, env)
+        except (ExitSignal, ReturnSignal, BreakSignal, ContinueSignal, MozhiError):
+            raise
+        except (NameError, TypeError, ValueError, IndexError, AttributeError,
+                ZeroDivisionError, OverflowError, RecursionError, EOFError) as error:
+            raise MozhiError(error, getattr(node, 'line', 1)) from None
+
+    def _exec(self, node, env):
         if isinstance(node, Assign):
             env.set(node.name, self.eval(node.expr, env))
-
+        elif isinstance(node, PropertyAssign):
+            obj = env.get(node.obj_name)
+            if not isinstance(obj, MozhiObject):
+                raise TypeError(f"'{node.obj_name}' is not a porul (object).")
+            obj.properties[node.prop_name] = self.eval(node.expr, env)
         elif isinstance(node, Print):
             print(self.mozhi_repr(self.eval(node.expr, env)))
-
         elif isinstance(node, While):
-            while self.truthy(self.eval(node.cond, env)):
-                try:
-                    self.exec_block(node.body, Environment(env))
-                except BreakSignal:
-                    break
-                except ContinueSignal:
-                    continue
-
+            self.loop_depth += 1
+            try:
+                while self.truthy(self.eval(node.cond, env)):
+                    try:
+                        self.exec_block(node.body, Environment(env))
+                    except BreakSignal:
+                        break
+                    except ContinueSignal:
+                        continue
+            finally:
+                self.loop_depth -= 1
         elif isinstance(node, If):
-            if self.truthy(self.eval(node.cond, env)):
-                self.exec_block(node.then_body, Environment(env))
-            elif node.else_body:
-                self.exec_block(node.else_body, Environment(env))
-
+            body = node.then_body if self.truthy(self.eval(node.cond, env)) else node.else_body
+            self.exec_block(body, Environment(env))
         elif isinstance(node, FuncDef):
             env.set(node.name, MozhiFunction(node.name, node.params, node.body, env))
-            
         elif isinstance(node, ClassDef):
-            methods = {}
-            for m in node.methods:
-                 methods[m.name] = m
+            methods = {m.name: MozhiFunction(m.name, m.params, m.body, env) for m in node.methods}
             env.set(node.name, MozhiClass(node.name, methods))
-
         elif isinstance(node, Return):
+            if not self.function_depth:
+                raise TypeError("thirumbu requires a function or method.")
             raise ReturnSignal(self.eval(node.expr, env))
-
         elif isinstance(node, Break):
+            if not self.loop_depth:
+                raise TypeError("nillu requires a loop in the current function.")
             raise BreakSignal()
-            
         elif isinstance(node, Continue):
+            if not self.loop_depth:
+                raise TypeError("thodaru requires a loop in the current function.")
             raise ContinueSignal()
-            
         elif isinstance(node, Exit):
-            print("Podhum, I am out.")
-            sys.exit(0)
-
+            print("[Mozhi] Podhum, I am out.")
+            raise ExitSignal()
         elif isinstance(node, ArrayPush):
             target = self.eval(node.array_expr, env)
-            val = self.eval(node.value_expr, env)
             if not isinstance(target, list):
-                raise TypeError(f"[Mozhi] Ithu varisai (list) illa da! Can't ullapodu.")
-            target.append(val)
-
+                raise TypeError("ullapodu requires a varisai (list).")
+            target.append(self.eval(node.value_expr, env))
         elif isinstance(node, ArrayPop):
             target = self.eval(node.array_expr, env)
             if not isinstance(target, list):
-                raise TypeError(f"[Mozhi] Ithu varisai (list) illa da! Can't veliyapodu.")
-            if len(target) == 0:
-                 raise IndexError(f"[Mozhi] Varisai is empty! Can't veliyapodu.")
+                raise TypeError("veliyapodu requires a varisai (list).")
+            if not target:
+                raise IndexError("Cannot pop an empty varisai (list).")
             target.pop()
-
-        elif isinstance(node, FuncCall) or isinstance(node, MethodCall):
+        else:
             self.eval(node, env)
 
-        else:
-            raise RuntimeError(f"[Mozhi] Exec theriyala: {type(node).__name__}")
+    def eval_builtin(self, name, args):
+        return BUILTINS[name](args)
+
+    def call(self, fn, args, instance=None):
+        if not isinstance(fn, MozhiFunction):
+            raise TypeError("The requested value is not a function.")
+        if instance is not None and not fn.params:
+            raise TypeError(f"Method '{fn.name}' needs an instance parameter (naan).")
+        values = ([instance] if instance is not None else []) + args
+        expected = len(fn.params) - (1 if instance is not None else 0)
+        if len(values) != len(fn.params):
+            raise TypeError(f"'{fn.name}' expects {expected} argument(s), got {len(args)}.")
+        call_env = Environment(fn.closure)
+        call_env.vars.update(zip(fn.params, values))
+        old_loop_depth = self.loop_depth
+        self.loop_depth = 0
+        self.function_depth += 1
+        try:
+            self.exec_block(fn.body, call_env)
+        except ReturnSignal as result:
+            return result.value
+        finally:
+            self.loop_depth = old_loop_depth
+            self.function_depth -= 1
+        return None
 
     def eval(self, node, env):
-        if isinstance(node, Num):   return node.value
-        if isinstance(node, Str):   return node.value
-        if isinstance(node, Bool):  return node.value
-        if isinstance(node, Var):   return env.get(node.name)
-        
+        if isinstance(node, (Num, Str, Bool)):
+            return node.value
+        if isinstance(node, Var):
+            return env.get(node.name)
         if isinstance(node, ArrayLiteral):
-             return [self.eval(e, env) for e in node.elements]
-             
+            return [self.eval(e, env) for e in node.elements]
         if isinstance(node, ObjectInstantiation):
-             cls = env.get(node.class_name)
-             if not isinstance(cls, MozhiClass):
-                  raise TypeError(f"[Mozhi] '{node.class_name}' vagai (class) illa da!")
-             return MozhiObject(cls)
-
+            cls = env.get(node.class_name)
+            if not isinstance(cls, MozhiClass):
+                raise TypeError(f"'{node.class_name}' is not a vagai (class).")
+            return MozhiObject(cls)
         if isinstance(node, ArrayIndex):
-             arr = self.eval(node.array_expr, env)
-             idx = self.eval(node.index_expr, env)
-             if not isinstance(arr, list):
-                  raise TypeError(f"[Mozhi] Enna da panni vechiruka? {type(arr).__name__} is not a varisai.")
-             if not isinstance(idx, int):
-                  raise TypeError(f"[Mozhi] Index must be a number, not {type(idx).__name__}.")
-             try:
-                 return arr[idx]
-             except IndexError:
-                 raise IndexError(f"[Mozhi] Index out of range da! List length is {len(arr)}.")
-
+            arr = self.eval(node.array_expr, env)
+            idx = self.eval(node.index_expr, env)
+            if not isinstance(arr, list):
+                raise TypeError("Indexing requires a varisai (list).")
+            if type(idx) is not int:
+                raise TypeError("A varisai index must be an integer.")
+            if not -len(arr) <= idx < len(arr):
+                raise IndexError(f"Index {idx} is out of range for length {len(arr)}.")
+            return arr[idx]
+        if isinstance(node, PropertyAccess):
+            obj = self.eval(node.obj_expr, env)
+            if not isinstance(obj, MozhiObject):
+                raise TypeError("Property access requires a porul (object).")
+            if node.name not in obj.properties:
+                raise AttributeError(f"'{obj.mozhi_class.name}' has no property '{node.name}'.")
+            return obj.properties[node.name]
         if isinstance(node, BinOp):
-            l = self.eval(node.left, env)
-            r = self.eval(node.right, env)
-            op = node.op
-            
-            # String concatenation
-            if op == '+' or op == 'kooda':
-                 if isinstance(l, str) or isinstance(r, str):
-                     return str(l) + str(r)
-                 return l + r
-            
-            if op in CMP:           
-                try:
-                    return CMP[op](l, r)
-                except TypeError:
-                    raise TypeError(f"[Mozhi] Enna da panni vechiruka? Can't compare {type(l).__name__} with {type(r).__name__}")
-            if op == '-':           return l - r
-            if op == '*':           return l * r
-            if op == '/':           return l / r
-            if op == '%':           return l % r
-            if op == '**':          return l ** r
-            if op == 'mattrum':     return self.truthy(l) and self.truthy(r)
-            if op == 'illaiyal':    return self.truthy(l) or self.truthy(r)
-
+            left = self.eval(node.left, env)
+            if node.op == 'mattrum':
+                return self.truthy(left) and self.truthy(self.eval(node.right, env))
+            if node.op == 'illaiyal':
+                return self.truthy(left) or self.truthy(self.eval(node.right, env))
+            right = self.eval(node.right, env)
+            if node.op in ('+', 'kooda'):
+                return str(left) + str(right) if isinstance(left, str) or isinstance(right, str) else left + right
+            if node.op in CMP: return CMP[node.op](left, right)
+            if node.op == '-': return left - right
+            if node.op == '*': return left * right
+            if node.op == '/': return left / right
+            if node.op == '%': return left % right
+            if node.op == '**': return left ** right
         if isinstance(node, UnaryOp):
-            v = self.eval(node.operand, env)
-            if node.op == '-':   return -v
-            if node.op == 'illa': return not self.truthy(v)
-
+            value = self.eval(node.operand, env)
+            if node.op == '-': return -value
+            if node.op == '+': return +value
+            if node.op == 'illa': return not self.truthy(value)
         if isinstance(node, FuncCall):
+            args = [self.eval(arg, env) for arg in node.args]
             if node.name in BUILTINS:
-                args = [self.eval(a, env) for a in node.args]
-                return BUILTINS[node.name](args)
-            fn = env.get(node.name)
-            if not isinstance(fn, MozhiFunction):
-                raise TypeError(f"[Mozhi] '{node.name}' function illa")
-            if len(node.args) != len(fn.params):
-                raise TypeError(f"[Mozhi] '{node.name}' ku {len(fn.params)} args venum, {len(node.args)} kuduthunga")
-            call_env = Environment(fn.closure)
-            for p, a in zip(fn.params, node.args):
-                call_env.set(p, self.eval(a, env))
-            try:
-                self.exec_block(fn.body, call_env)
-                return None
-            except ReturnSignal as r:
-                return r.value
-                
+                minimum, maximum = BUILTIN_ARITY[node.name]
+                if not minimum <= len(args) <= maximum:
+                    count = str(minimum) if minimum == maximum else f"{minimum} to {maximum}"
+                    raise TypeError(f"'{node.name}' expects {count} argument(s), got {len(args)}.")
+                return self.eval_builtin(node.name, args)
+            return self.call(env.get(node.name), args)
         if isinstance(node, MethodCall):
             obj = self.eval(node.obj_expr, env)
             if not isinstance(obj, MozhiObject):
-                raise TypeError(f"[Mozhi] That's not a porul (object)! Can't call method '{node.method_name}'.")
-            
+                raise TypeError(f"'{node.method_name}' requires a porul (object).")
             if node.method_name not in obj.mozhi_class.methods:
-                raise AttributeError(f"[Mozhi] '{obj.mozhi_class.name}' vagai la '{node.method_name}' method illa da!")
-                
-            method_def = obj.mozhi_class.methods[node.method_name]
-            
-            # Methods must have at least 'self' (let's call it 'naan' in Mozhi)
-            if len(method_def.params) == 0:
-                raise TypeError(f"[Mozhi] Method '{node.method_name}' must have at least one parameter for 'naan' (self).")
-                
-            if len(node.args) != len(method_def.params) - 1:
-                raise TypeError(f"[Mozhi] Method '{node.method_name}' expects {len(method_def.params) - 1} args, got {len(node.args)}.")
-                
-            call_env = Environment(method_def.closure)
-            # Bind the object instance to the first parameter ('naan')
-            call_env.set(method_def.params[0], obj)
-            for p, a in zip(method_def.params[1:], node.args):
-                call_env.set(p, self.eval(a, env))
-                
-            try:
-                self.exec_block(method_def.body, call_env)
-                return None
-            except ReturnSignal as r:
-                return r.value
+                raise AttributeError(f"'{obj.mozhi_class.name}' has no method '{node.method_name}'.")
+            args = [self.eval(arg, env) for arg in node.args]
+            return self.call(obj.mozhi_class.methods[node.method_name], args, obj)
+        raise TypeError(f"Unsupported expression: {type(node).__name__}.")
 
-        raise RuntimeError(f"[Mozhi] Eval theriyala: {type(node).__name__}")
+    def truthy(self, value):
+        return bool(value)
 
-    def truthy(self, v):
-        return v not in (None, False, 0, 0.0, '', [])
-
-    def mozhi_repr(self, v):
-        if v is True:  return 'true'
-        if v is False: return 'false'
-        if v is None:  return 'onnum illa'
-        if isinstance(v, list): return '[' + ', '.join(self.mozhi_repr(x) for x in v) + ']'
-        if isinstance(v, float) and v.is_integer(): return str(int(v))
-        return str(v)
+    def mozhi_repr(self, value):
+        if value is True: return 'true'
+        if value is False: return 'false'
+        if value is None: return 'onnum illa'
+        if isinstance(value, list): return '[' + ', '.join(self.mozhi_repr(x) for x in value) + ']'
+        if isinstance(value, float) and value.is_integer(): return str(int(value))
+        return str(value)
 
 # ─────────────────────────────────────────────
 # ENTRY
@@ -835,15 +893,30 @@ def run(source: str):
     parser = Parser(tokens)
     ast = parser.parse()
     interp = Interpreter()
-    interp.exec_block(ast, Environment())
+    try:
+        interp.exec_block(ast, Environment())
+    except ExitSignal:
+        pass
 
 def main():
-    if len(sys.argv) < 2 or sys.argv[1] == '--example':
-        print("─── Mozhi Example ───")
-        run(EXAMPLE)
-        return
-    with open(sys.argv[1], 'r') as f:
-        run(f.read())
+    # Files and pipes use UTF-8 too, including Windows' legacy console locales.
+    for stream in (sys.stdin, sys.stdout, sys.stderr):
+        if hasattr(stream, 'reconfigure'):
+            stream.reconfigure(encoding='utf-8')
+    try:
+        if len(sys.argv) < 2 or sys.argv[1] == '--example':
+            print("--- Mozhi Example ---")
+            run(EXAMPLE)
+        else:
+            with open(sys.argv[1], 'r', encoding='utf-8') as source_file:
+                run(source_file.read())
+        return 0
+    except KeyboardInterrupt:
+        print("[Mozhi] Stopped by user.", file=sys.stderr)
+        return 130
+    except (MozhiError, SyntaxError, OSError) as error:
+        print(str(error), file=sys.stderr)
+        return 1
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())

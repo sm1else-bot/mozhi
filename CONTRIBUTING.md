@@ -2,7 +2,7 @@
 
 Mozhi is an experimental language with deliberately preserved historical implementations. Report which runtime you used: Python CLI or browser playground. Include a minimal `.mozhi` program, expected/actual output, and Python/browser version.
 
-Start with `python -m unittest discover -s tests -v`. Documentation uses `python -m mkdocs build --strict` after installing `requirements-docs.txt`.
+After core changes run `python tools/sync_playground.py`, then `python -m unittest discover -s tests -v`. The browser engine is generated; edit the core and generator adapter instead of editing that artifact by hand. Optional worker/UI integration checks use `npm ci`, `npx playwright install chromium`, then `npm run test:browser`. Documentation uses `python -m mkdocs build --strict` after installing `requirements-docs.txt`.
 
 Propose syntax changes with their Tamil grammatical rationale and a migration example. Keep interpreter repairs distinct from grammar changes. New behavior needs meaningful regression coverage, especially for scope, OOP, asynchronous input, and termination. Run untrusted or potentially nonterminating programs only with appropriate isolation and bounds.
 

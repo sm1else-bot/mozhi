@@ -1,6 +1,8 @@
 # Vanakkam! Welcome to Mozhi Documentation
 
-> These examples describe the preserved browser runtime. The earlier CLI has different input naming and known scope/OOP bugs. See the repository README and LANGUAGE.md for the runtime comparison.
+> These examples run in the current CLI and browser adapters. Both input spellings, `kelu` and `ketukko`, are supported. See the repository README and LANGUAGE.md for execution controls and current limitations.
+
+Start with [Running Mozhi](runtime.md) for CLI commands and playground controls. See [Operators](basics/operators.md) for exponentiation and short-circuit rules, and [Errors and validation](errors.md) for diagnostics and recovery.
 
 **Mozhi** is a unique, Tanglish-based object-oriented programming language designed to bridge conversational dialogue with structural code mechanics. By adopting common Tamil-English colloquial phrases, Mozhi provides a programming experience that feels responsive, logical, and deeply familiar.
 
