@@ -22,11 +22,11 @@ No code or modern provenance documents appear before their supported source snap
 
 | Archival commit | Author and committer timestamp | Source snapshot and SHA-256 | Evidence and limitations |
 | --- | --- | --- | --- |
-| `42437b95b3b54a1b483fea1fa1907872e197a978` | `2026-05-31T21:52:50-04:00` | `mozhi.py`: `2ef5c23c870aba52952e6891bd2a80db39dc6f9f70e8ca7dfd2b8cc997b5a2eb` | E01: Completion of recorded create_file input stream; known parser failures; does not date original conception. |
-| `447bb1973a3d6776ef6e534026c545d333174233` | `2026-05-31T21:54:18-04:00` | `mozhi.py`: `97fe0e7c8cb0d9e2c567c3edcb021cd957ada2933b38c9460f1c853b780d87b9` | E02: Completion of literal shell-heredoc input stream; native source equals two later saved copies; known loop bug. |
-| `4cd3b0ec149e39875412676e810fc37720d37473` | `2026-06-13T01:48:09-04:00` | `mozhi.py`: `86a9595cbf1c03646100dd39bde717f0a42f9919416c67be179d3538479175c5` | E03: Conservative bound from complete downloaded snapshot last-write; corroborated by Gemini response source differing only in extra terminal newline. Not a feature-discussion timestamp or authenticated generation time. |
-| `5f67d601c6f6664479afa03fd9db4abba0fd60cb` | `2026-06-13T02:26:01-04:00` | `mozhionline.html`: `c3a6edc1251d0632410dea5f213c37c2ebe6ca9302af0ce2eb7f67a3f2f48e00` | E04: Verified current bytes and filesystem last-write corroborated by saved final Antigravity diff. Not earlier creation time. |
-| `25e16453d0723b0302de6d7d64b989806ba979e5` | `2026-06-13T02:34:31-04:00` | README, configuration, eight documentation pages and four examples; individual SHA-256 values below | E05: grouped snapshot; current saved content, supported per-file times and documentation actions. |
+| `b9653846a9d004b66f1d19077c8f3d54bdcc3efb` | `2026-05-31T21:52:50-04:00` | `mozhi.py`: `2ef5c23c870aba52952e6891bd2a80db39dc6f9f70e8ca7dfd2b8cc997b5a2eb` | E01: Completion of recorded create_file input stream; known parser failures; does not date original conception. |
+| `98b8f2e81bcc22684572df7489890957c70863a5` | `2026-05-31T21:54:18-04:00` | `mozhi.py`: `97fe0e7c8cb0d9e2c567c3edcb021cd957ada2933b38c9460f1c853b780d87b9` | E02: Completion of literal shell-heredoc input stream; native source equals two later saved copies; known loop bug. |
+| `09b368b4e995789fd80bcf724b06f60ae964eb89` | `2026-06-13T01:48:09-04:00` | `mozhi.py`: `86a9595cbf1c03646100dd39bde717f0a42f9919416c67be179d3538479175c5` | E03: Conservative bound from complete downloaded snapshot last-write; corroborated by Gemini response source differing only in extra terminal newline. Not a feature-discussion timestamp or authenticated generation time. |
+| `524c4f72669882851a4914f1818cc345c13812e4` | `2026-06-13T02:26:01-04:00` | `mozhionline.html`: `c3a6edc1251d0632410dea5f213c37c2ebe6ca9302af0ce2eb7f67a3f2f48e00` | E04: Verified current bytes and filesystem last-write corroborated by saved final Antigravity diff. Not earlier creation time. |
+| `bbf729d5ea046cce2e3bcffd9127d1a6a2c44ba1` | `2026-06-13T02:34:31-04:00` | README, configuration, eight documentation pages and four examples; individual SHA-256 values below | E05: grouped snapshot; current saved content, supported per-file times and documentation actions. |
 
 ### Original source precision and file digests
 
@@ -66,3 +66,7 @@ Modern commits use actual October creation times. They add the layout, README, l
 Public references E01–E05 identify evidence categories without private conversation IDs, personal absolute paths, full transcripts, account data, databases or Takeout archives. No private raw evidence is included. Historical sample first names in documentation are illustrative code, not an exported contact list. Externally loaded frontend libraries are referenced by the original HTML, not vendored into this repository.
 
 First public publication is planned for October 2026 and has not yet occurred at preparation. The GitHub repository creation date will reflect actual publication; older archival commit timestamps are not proof that a GitHub repository existed then. No historical release tags or public priority claims are made. The author explicitly chose MIT for this release.
+
+## Commit-subject revision
+
+In October 2026, the six initial subjects were revised for readability. Each rewritten commit retains its exact source tree and byte-identical author/committer identity and timestamp headers. Only messages and necessarily parent references changed. This provenance refresh is a separate current-dated commit. The archival IDs above refer to the revised sequence.

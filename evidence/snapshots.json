@@ -4,11 +4,11 @@
   "archivalCommits": [
     {
       "evidenceId": "E01",
-      "commit": "42437b95b3b54a1b483fea1fa1907872e197a978",
+      "commit": "b9653846a9d004b66f1d19077c8f3d54bdcc3efb",
       "tree": "3a92f46daa7f2400cba64f79ee2deb77ff7ab500",
       "authorDate": "2026-05-31T21:52:50-04:00",
       "committerDate": "2026-05-31T21:52:50-04:00",
-      "subject": "archive: recover original Lark-based Mozhi interpreter",
+      "subject": "Initial Mozhi interpreter using Lark",
       "files": [
         {
           "path": "mozhi.py",
@@ -21,11 +21,11 @@
     },
     {
       "evidenceId": "E02",
-      "commit": "447bb1973a3d6776ef6e534026c545d333174233",
+      "commit": "98b8f2e81bcc22684572df7489890957c70863a5",
       "tree": "3112494f872846aa1ee08e4e819396e4a9e8619a",
       "authorDate": "2026-05-31T21:54:18-04:00",
       "committerDate": "2026-05-31T21:54:18-04:00",
-      "subject": "archive: replace Lark parser with recursive-descent interpreter",
+      "subject": "Rewrite interpreter with recursive-descent parser",
       "files": [
         {
           "path": "mozhi.py",
@@ -38,11 +38,11 @@
     },
     {
       "evidenceId": "E03",
-      "commit": "4cd3b0ec149e39875412676e810fc37720d37473",
+      "commit": "09b368b4e995789fd80bcf724b06f60ae964eb89",
       "tree": "6a9de033e9a2c9ba139bb58064d9acd597e8cfd4",
       "authorDate": "2026-06-13T01:48:09-04:00",
       "committerDate": "2026-06-13T01:48:09-04:00",
-      "subject": "archive: preserve expanded Mozhi interpreter",
+      "subject": "Add arrays, objects, and extended language features",
       "files": [
         {
           "path": "mozhi.py",
@@ -55,11 +55,11 @@
     },
     {
       "evidenceId": "E04",
-      "commit": "5f67d601c6f6664479afa03fd9db4abba0fd60cb",
+      "commit": "524c4f72669882851a4914f1818cc345c13812e4",
       "tree": "ace66821b670b785f8309bf7ed785d2ba8164d71",
       "authorDate": "2026-06-13T02:26:01-04:00",
       "committerDate": "2026-06-13T02:26:01-04:00",
-      "subject": "archive: preserve browser playground and interactive runtime",
+      "subject": "Build interactive browser playground",
       "files": [
         {
           "path": "mozhionline.html",
@@ -72,11 +72,11 @@
     },
     {
       "evidenceId": "E05",
-      "commit": "25e16453d0723b0302de6d7d64b989806ba979e5",
+      "commit": "bbf729d5ea046cce2e3bcffd9127d1a6a2c44ba1",
       "tree": "a3f925a5090ff7748532657955c179988a350e3e",
       "authorDate": "2026-06-13T02:34:31-04:00",
       "committerDate": "2026-06-13T02:34:31-04:00",
-      "subject": "archive: preserve original documentation and examples",
+      "subject": "Add language documentation and example programs",
       "files": [
         {
           "path": "calculator.mozhi",
@@ -178,5 +178,9 @@
         }
       ]
     }
-  ]
+  ],
+  "messageRevision": {
+    "performedOn": "2026-10-27",
+    "scope": "First six subjects revised; source trees and author/committer headers preserved exactly. Reference updates belong to a subsequent current-dated commit."
+  }
 }
