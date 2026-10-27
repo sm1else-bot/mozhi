@@ -2,7 +2,9 @@
   "name": "mozhi-playground-checks",
   "private": true,
   "scripts": {
-    "test:browser": "node tests/playground_checks.cjs"
+    "test:browser": "node tests/playground_checks.cjs",
+    "test:studio": "node tests/studio_checks.cjs",
+    "test:site": "node tests/site_checks.cjs"
   },
   "devDependencies": {
     "playwright": "1.62.1"

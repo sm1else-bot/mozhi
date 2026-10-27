@@ -1,27 +1,31 @@
 site_name: Mozhi Documentation
 site_description: Professional documentation for the Tanglish-based Mozhi programming language.
+repo_url: https://github.com/sm1else-bot/mozhi
+repo_name: sm1else-bot/mozhi
+copyright: Mozhi · An experimental language with Tamil-inspired syntax
 theme:
   name: material
+  custom_dir: docs/overrides
+  font:
+    text: DM Sans
+    code: IBM Plex Mono
   palette:
-    - media: "(prefers-color-scheme: dark)"
-      scheme: slate
-      primary: blue
-      accent: blue
-      toggle:
-        icon: material/brightness-4
-        name: Switch to light mode
-    - media: "(prefers-color-scheme: light)"
-      scheme: default
-      primary: blue
-      accent: blue
-      toggle:
-        icon: material/brightness-7
-        name: Switch to dark mode
+    scheme: default
+    primary: custom
+    accent: custom
   features:
-    - navigation.tabs
     - navigation.sections
+    - navigation.footer
+    - navigation.top
+    - content.code.copy
     - search.highlight
     - search.suggest
+
+extra_css:
+  - stylesheets/studio.css
+
+extra:
+  generator: false
 
 markdown_extensions:
   - admonition

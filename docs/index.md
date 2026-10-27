@@ -1,16 +1,19 @@
-# Vanakkam! Welcome to Mozhi Documentation
+# A little Tamil. A lot to build.
 
 > These examples run in the current CLI and browser adapters. Both input spellings, `kelu` and `ketukko`, are supported. See the repository README and LANGUAGE.md for execution controls and current limitations.
 
 Start with [Running Mozhi](runtime.md) for CLI commands and playground controls. See [Operators](basics/operators.md) for exponentiation and short-circuit rules, and [Errors and validation](errors.md) for diagnostics and recovery.
 
-**Mozhi** is a unique, Tanglish-based object-oriented programming language designed to bridge conversational dialogue with structural code mechanics. By adopting common Tamil-English colloquial phrases, Mozhi provides a programming experience that feels responsive, logical, and deeply familiar.
+Mozhi is an experimental programming language with Tamil-inspired, verb-final syntax. These pages explain the language, show working programs, and document its current limits. Studio contains the interactive lessons; Learn is the full language guide.
+
+**Historical note:** The early repository commits are retrospective archival reconstructions from recovered development records. They are not original commits made on those dates. The repository's PROVENANCE.md explains the evidence and method.
 
 ---
 
 ## Language Philosophy
 
 Most programming languages use English structures. Mozhi breaks this convention by incorporating:
+
 * **Natural Declarations**: Stating variables using `vechukko` ("keep this").
 * **Colloquial Control Flow**: Evaluating decisions using `na` ("if") and loops using `varaikum` ("until").
 * **Object-Oriented Idioms**: Designing models with `vagai` ("class") and creating instances with `porul` ("object").

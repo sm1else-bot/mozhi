@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@600&display=swap');
+
+/* Shared paper, sage, and forest palette with the interactive studio. */
+:root, [data-md-color-scheme="default"] {
+  --md-primary-fg-color: #266b4f;
+  --md-primary-fg-color--light: #e8f1e3;
+  --md-primary-fg-color--dark: #1d533d;
+  --md-accent-fg-color: #266b4f;
+  --md-accent-fg-color--transparent: #266b4f18;
+  --md-default-bg-color: #f4f6f2;
+  --md-default-fg-color: #24382e;
+  --md-default-fg-color--light: #61705a;
+  --md-default-fg-color--lighter: #7d8c75;
+  --md-typeset-a-color: #266b4f;
+  --md-code-bg-color: #eff3eb;
+  --md-code-fg-color: #294333;
+  --md-footer-bg-color: #edf1e9;
+  --md-footer-bg-color--dark: #e7ede2;
+  --md-footer-fg-color: #24382e;
+  --md-footer-fg-color--light: #61705a;
+  --md-footer-fg-color--lighter: #61705a;
+}
+.md-header {background: #fff; color: #24382e; box-shadow: none; border-bottom: 1px solid #e2e8dd;}
+.md-header__inner {min-height: 3.6rem;}
+.md-header__title {font-weight: 650; letter-spacing: -.025em;}
+.md-header__button.md-logo {padding: .2rem; margin-right: .6rem;}
+.mozhi-docs-mark {display: flex; align-items: center; justify-content: center; width: 35px; height: 35px; background: #266b4f; color: white; border-radius: 9px; font: 600 12px/1.5 'Noto Sans Tamil', 'Nirmala UI', sans-serif; letter-spacing: 0;}
+.md-search__form {background: #f4f6f2; border: 1px solid #e2e8dd; border-radius: 7px;}
+.md-search__input::placeholder {color: #61705a;}
+.md-search__icon {color: #61705a;}
+.md-header .md-search__icon, .md-header .md-search__input {color: #24382e;}
+.mozhi-nav {background: #fff; border-bottom: 1px solid #e2e8dd;}
+.mozhi-nav-inner {display: flex; align-items: center; gap: 1.7rem; padding: 0 .8rem;}
+.mozhi-nav a {font-size: .68rem; font-weight: 500; color: #61705a; padding: .85rem .15rem .7rem; border-bottom: 3px solid transparent;}
+.mozhi-nav a:hover, .mozhi-nav .is-current {color: #266b4f; border-color: #266b4f;}
+.mozhi-nav-caption {margin-left: auto; font-size: .65rem; color: #61705a;}
+.md-main__inner {margin-top: 1.7rem;}
+.md-content {background: #fff; border: 1px solid #e2e8dd; border-radius: 12px; min-width: 0;}
+.md-content__inner {margin: 1.7rem 2rem 2.3rem; padding-top: .1rem;}
+.md-typeset {font-size: .78rem; line-height: 1.85;}
+.md-typeset h1 {color: #24382e; font-weight: 550; font-size: 1.85rem; letter-spacing: -.045em; line-height: 1.25; margin-bottom: 1.1rem;}
+.md-typeset h2 {color: #24382e; font-weight: 550; letter-spacing: -.025em; border-top: 1px solid #e2e8dd; padding-top: 1.2rem;}
+.md-typeset h3 {font-weight: 600;}
+.md-typeset a:hover {color: #1d533d; text-decoration: underline;}
+.md-typeset code {border-radius: 4px; padding: .12em .3em; font-size: .85em;}
+.md-typeset pre > code {border: 1px solid #dfe7d9; border-radius: 8px; padding: 1rem; line-height: 1.8;}
+.md-typeset blockquote {background: #f2f6ed; border-left: 3px solid #9bb78c; border-radius: 0 8px 8px 0; padding: .3rem .9rem; color: #526749;}
+.md-typeset .admonition, .md-typeset details {border-radius: 8px; box-shadow: none;}
+.md-typeset table:not([class]) {border: 1px solid #e2e8dd; border-radius: 8px; box-shadow: none;}
+.md-typeset table:not([class]) th {background: #edf3e7; color: #294333;}
+.md-nav {font-size: .68rem;}
+.md-nav__item .md-nav__link--active {color: #266b4f; font-weight: 650;}
+.md-nav--primary .md-nav__title {box-shadow: none; background: #f4f6f2; color: #24382e;}
+.md-nav__link:hover {color: #266b4f;}
+.md-footer {margin-top: 2rem; border-top: 1px solid #dce5d5;}
+.md-copyright, .md-copyright__highlight {color: #61705a;}
+.md-typeset .md-button {border-radius: 7px; border-width: 1px; font-weight: 550;}
+:focus-visible {outline: 2px solid #266b4f; outline-offset: 3px;}
+@media(max-width: 76.234375em) {
+  .md-nav--primary .md-nav__title[for="__drawer"] {background: #e8f1e3; color: #24382e;}
+  .md-nav--primary .md-nav__source {background: #edf3e7; color: #24382e;}
+}
+@media(max-width: 600px) {
+  .mozhi-nav-inner {gap: 1.5rem; padding: 0 1rem;}
+  .mozhi-nav-caption {display: none;}
+  .md-main__inner {margin-top: .8rem;}
+  .md-content {border-radius: 0; border-left: 0; border-right: 0;}
+  .md-content__inner {margin: 1.3rem 1rem 1.8rem;}
+  .md-typeset h1 {font-size: 1.6rem;}
+}
+@media(prefers-reduced-motion: reduce) {*, *::before, *::after {scroll-behavior: auto !important; transition: none !important;}}

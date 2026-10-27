@@ -11,7 +11,7 @@ const server = http.createServer((req, res) => {
     if (!file.startsWith(root + path.sep)) { res.writeHead(403); res.end(); return; }
     fs.readFile(file, (error, data) => {
         if (error) { res.writeHead(404); res.end(); return; }
-        const types = {'.html': 'text/html', '.js': 'application/javascript'};
+        const types = {'.html': 'text/html', '.js': 'application/javascript', '.css': 'text/css'};
         res.setHeader('Content-Type', (types[path.extname(file)] || 'text/plain') + '; charset=utf-8');
         res.end(data);
     });
