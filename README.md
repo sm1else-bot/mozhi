@@ -36,6 +36,8 @@ There is no installed `mozhi` command or packaged REPL yet. Invoking the CLI wit
 
 ## Use the playground
 
+Open [Mozhi Studio](https://sm1else-bot.github.io/mozhi/) or read [Learn](https://sm1else-bot.github.io/mozhi/learn/). GitHub Pages builds and publishes the combined site after checks pass on each push to `main`.
+
 From the repository root:
 
 ```sh
