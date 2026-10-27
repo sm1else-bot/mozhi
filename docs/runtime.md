@@ -19,7 +19,9 @@ The CLI uses the Python standard library. Without a filename, or with `--example
 Start a server from the repository root:
 
 ```sh
-python -m http.server 8000
+python -m pip install -r requirements-docs.txt
+python tools/build_site.py
+python -m http.server 8000 --directory site
 ```
 
 Open `http://localhost:8000/playground/`. Wait for the engine to become ready, paste a program, and click **Run Mozhi**. Runtime files are fetched over HTTP, so opening the HTML directly as a `file:` URL is not supported. The browser downloads Pyodide 0.23.4 and CodeMirror 5.65.13 from external CDNs. A plain textarea is used if the editor library fails to load.
@@ -32,6 +34,30 @@ Open `http://localhost:8000/playground/`. Wait for the engine to become ready, p
 - **One run at a time:** Run is disabled during execution, input, and loading. Old input requests are discarded after Stop or timeout.
 
 `podhum` ends the entire current program without destroying the reusable engine. Runtime errors leave the controls ready for a new run. The worker and timeout are usability controls, not a security or memory sandbox. Do not run untrusted code on the assumption that they provide isolation from every resource hazard.
+
+### Learning and editing
+
+**Studio** contains the interactive lesson workspace. **Learn** opens this full MkDocs documentation, styled to match the studio. **Examples** opens the program gallery. Build with `tools/build_site.py` to preview all three together; serving only the source playground does not generate the Learn pages.
+
+The studio has eight lessons covering output, variables, decisions, loops, arrays, functions, input, and objects. Each lesson includes an explanation, a runnable starter, a practice task, a hint, and expected output. Completion requires a successful run that passes the lesson's check. Progress is saved locally. Checks are lightweight learning aids, not exhaustive correctness proofs.
+
+Use **Examples** for eight programs, including the original demo, calculator, library, and gossip sources. The **Reference** tab searches language keywords and provides copyable snippets. Hover over a keyword in the editor for its meaning. Errors highlight the reported source line and offer a button to navigate there.
+
+Editor settings control font size and line wrapping. Import `.mozhi` or `.txt` files up to 256 KB and download the current program as UTF-8. Edited code is protected by a replacement confirmation. **Restore previous draft** in editor settings recovers the last replaced program.
+
+| Shortcut | Action |
+| --- | --- |
+| Ctrl+Enter | Run |
+| Ctrl+Shift+Enter | Stop |
+| Ctrl+K | Search lessons, examples, and commands |
+| Ctrl+S | Download the current program |
+| ? outside text fields | Keyboard help |
+
+### Local records and sharing
+
+The current draft, editor preferences, completed lessons, and last eight runs are saved in browser local storage for this origin. Run records include source, output, outcome, and duration; use **Clear history** to remove them. Storage can be unavailable or cleared by the browser, so download programs you need to keep. Execution still works when storage is blocked.
+
+**Share code** creates a link containing the source, filename, and lesson in its URL fragment. No application storage service receives the program. Anyone with the link can read its code; avoid including secrets. Sharing does not include run history or input answers. Links need a reachable deployment of this website; localhost links only work on the sender's computer. Programs exceeding the link size limit must be downloaded instead. The interface uses optional Google Fonts with system font fallbacks.
 
 ## Maintaining the two adapters
 
@@ -48,6 +74,7 @@ The regression suite checks generation freshness and exercises both adapters in 
 npm ci
 npx playwright install chromium
 npm run test:browser
+npm run test:studio
 ```
 
 Set `MOZHI_TEST_BROWSER` to an existing Chrome/Chromium executable to avoid downloading the test browser. Tests use a fresh temporary profile, not your personal browser session.

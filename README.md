@@ -39,12 +39,20 @@ There is no installed `mozhi` command or packaged REPL yet. Invoking the CLI wit
 From the repository root:
 
 ```sh
-python -m http.server 8000
+python -m pip install -r requirements-docs.txt
+python tools/build_site.py
+python -m http.server 8000 --directory site
 ```
 
-Open [the playground locally](http://localhost:8000/playground/). Wait for **Run Mozhi**, paste code, and run it. For the historical programs, copy the contents of `examples/demo.mozhi`, `library.mozhi`, `gossip.mozhi`, or `calculator.mozhi` into the editor. Calculator inputs 1, 10, 5, 6 add ten, show it, and exit the menu.
+Open [the playground locally](http://localhost:8000/playground/). The light studio includes eight guided lessons, practice tasks, hints, and progress earned by running working programs. Browse eight examples, including the original demo, library, gossip, and calculator programs. Calculator inputs 1, 10, 5, 6 add ten, show it, and exit the menu.
 
-CodeMirror 5.65.13 and Pyodide 0.23.4 load from external CDNs. First loading needs network access. The playground uses plain-text editing, not dedicated Mozhi syntax highlighting. A plain textarea remains usable if CodeMirror fails to load. Stop the local server with Ctrl+C.
+**Studio** contains the interactive lessons, **Learn** opens the full MkDocs documentation, and **Examples** opens the program gallery. The combined build places these at `playground/`, `learn/`, and `examples/` within the ignored `site/` directory. Its relative links also work when hosted under a repository path. Rebuild after editing sources; generated files are not committed.
+
+The editor includes Mozhi syntax highlighting, keyword tooltips, a searchable reference, error line navigation, font and wrapping controls, file import/export, and a command palette. Use Ctrl+Enter to run, Ctrl+Shift+Enter to stop, Ctrl+K to search, or Ctrl+S to download. The interface adapts to phones and supports keyboard navigation.
+
+Drafts, preferences, lesson progress, and the last eight runs are saved in browser storage on this origin. Replacing edited code asks for confirmation and keeps the previous draft recoverable from editor settings. Clearing browser data removes these records. Download important programs for a durable copy. **Share code** encodes the current program in a URL fragment without uploading it to a storage service. Anyone with the link can read the code; recipients need access to the same hosted website. A localhost link only works on your computer.
+
+CodeMirror 5.65.13 and Pyodide 0.23.4 load from external CDNs, and optional web fonts load from Google Fonts. First loading needs network access. A plain textarea remains usable if CodeMirror fails to load. Stop the local server with Ctrl+C.
 
 Programs execute in a worker. **Stop** terminates even a tight infinite loop, and a configurable execution limit defaults to **10 seconds** (0.1–3600 seconds). Waiting for user input pauses the timer; submitting input resumes the remaining budget. Stopping or timing out cancels pending input and creates a fresh engine. Engine-load failures expose **Retry engine**. Output is capped at 65,536 JavaScript characters to keep runaway printing responsive. This is a usability limit, not a security sandbox.
 
@@ -68,7 +76,7 @@ See [LANGUAGE.md](LANGUAGE.md) for the supported syntax and [the documentation s
 - This is still an experimental language, not full Python compatibility. Constructors are called manually after `ClassName porul`; indexed assignment and module imports are not implemented.
 - Errors now report source statement lines and validate indentation, argument counts, array indices, properties, input conversion and control-flow placement. There is no exception-handling syntax for recovering within a Mozhi program yet.
 - The browser limit measures elapsed execution time outside input waits, not CPU instructions. A stopped worker must reload Pyodide. Extremely memory-hungry programs are not safely sandboxed. CLI execution remains unbounded; use Ctrl+C or an external process timeout for intentional endless programs.
-- No module/package ecosystem, standard library collection, compatibility guarantee, packaged installer, dedicated highlighter, or official GitHub Linguist recognition is included.
+- No module/package ecosystem, standard library collection, compatibility guarantee, packaged installer, or official GitHub Linguist recognition is included. The playground highlighter is a lightweight token highlighter, not a language server or autocomplete engine.
 
 ## Runtime checks
 
@@ -85,6 +93,7 @@ Optional actual-browser checks require Node.js 20 or later, network access, and 
 npm ci
 npx playwright install chromium
 npm run test:browser
+npm run test:studio
 ```
 
 `MOZHI_TEST_BROWSER` may name an existing Chrome/Chromium executable instead of the Playwright download. The checks use a fresh temporary profile, exercise worker Stop/timeout/recovery and input pauses, and do not operate your personal browser session.
@@ -101,7 +110,7 @@ The generated `site/` is ignored. The docs cover [runtime controls](docs/runtime
 
 ## Roadmap and contributions
 
-Next: a fuller language specification, deeper runtime coverage, a CLI/REPL package, syntax highlighting and editor integration, then modules and packaging. Official Linguist recognition is a future milestone; `.mozhi` files are not relabeled as Python.
+Next: a fuller language specification, deeper runtime coverage, a CLI/REPL package, richer editor integration, then modules and packaging. Official Linguist recognition is a future milestone; `.mozhi` files are not relabeled as Python.
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md) before proposing changes. The language concept and syntax were directed by the project author; implementation was AI-assisted with Claude, then Gemini and Google Antigravity. These tools assisted development rather than independently originating the author's language idea.
 

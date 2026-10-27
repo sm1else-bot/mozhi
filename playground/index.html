@@ -1,150 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mozhi Playground</title>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
-    
-
-
-    <style>
-        [hidden] { display: none !important; }
-        #status { padding: 8px 20px; }
-        #time-limit { width: 5em; margin: 0 10px; }
-        #code-editor { flex: 1; min-height: 15em; background: #282a36; color: #f8f8f2; }
-        header { gap: 12px; flex-wrap: wrap; }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #1e1e1e;
-            color: #d4d4d4;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-
-        header {
-            background-color: #252526;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #333;
-        }
-
-        h1 {
-            margin: 0;
-            font-size: 1.5rem;
-            color: #007acc;
-        }
-
-        button {
-            background-color: #0e639c;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 1rem;
-            cursor: pointer;
-            border-radius: 4px;
-            font-weight: bold;
-            transition: background-color 0.2s;
-        }
-
-        button:hover {
-            background-color: #1177bb;
-        }
-        
-        button:disabled {
-            background-color: #555;
-            cursor: not-allowed;
-        }
-
-        .main-container {
-            display: flex;
-            flex: 1;
-            overflow: hidden;
-        }
-
-        .editor-pane {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            border-right: 1px solid #333;
-        }
-
-        .output-pane {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background-color: #1e1e1e;
-        }
-
-        .pane-header {
-            background-color: #2d2d30;
-            padding: 5px 15px;
-            font-size: 0.9rem;
-            color: #ccc;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border-bottom: 1px solid #333;
-        }
-
-        .CodeMirror {
-            flex: 1;
-            height: auto;
-            font-size: 16px;
-        }
-
-        #output {
-            flex: 1;
-            padding: 15px;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 15px;
-            white-space: pre-wrap;
-            overflow-y: auto;
-            color: #d4d4d4;
-            background-color: #1e1e1e;
-        }
-        
-        .error {
-            color: #f44336;
-        }
-    </style>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#f5f7f3">
+<meta name="description" content="Learn Mozhi through guided lessons, working examples and a friendly, interactive programming workspace.">
+<title>Mozhi Playground | Learn by making</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css"><link rel="stylesheet" href="studio.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js" defer></script><script src="content.js" defer></script><script src="app.js" defer></script>
 </head>
 <body>
-
-    <header>
-        <h1>Mozhi Playground</h1>
-        <div>
-            <label for="time-limit">Execution limit (seconds)</label>
-            <input id="time-limit" type="number" min="0.1" max="3600" step="0.1" value="10">
-            <button id="run-btn" disabled>Run Mozhi</button>
-            <button id="stop-btn" disabled>Stop</button>
-            <button id="retry-btn" hidden>Retry engine</button>
-        </div>
-    </header>
-
-    <div id="status" role="status">Loading engine…</div>
-    <div class="main-container">
-        <div class="editor-pane">
-            <div class="pane-header">Code</div>
-            <textarea id="code-editor"></textarea>
-        </div>
-        <div class="output-pane">
-            <div class="pane-header">Output</div>
-            <div id="output"></div>
-            <form id="input-container" hidden style=" padding: 15px; background-color: #252526; border-top: 1px solid #333;">
-                <input type="text" id="mozhi-input" placeholder="Mozhi-la type pannu..." style="background-color: #1e1e1e; color: #d4d4d4; border: 1px solid #333; padding: 10px; font-size: 1rem; width: 70%; border-radius: 4px; margin-right: 10px;">
-                <button type="submit">Enter</button>
-            </form>
-        </div>
-    </div>
-
-    <script src="app.js"></script>
-</body>
-</html>
+<svg class="svg-defs" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs>
+<symbol id="i-play" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7z" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+<symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+<symbol id="i-code" viewBox="0 0 24 24"><path d="m8 7-5 5 5 5m8-10 5 5-5 5m-3-14-2 18"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M12 6v15M3 4c4-1 6 0 9 2 3-2 5-3 9-2v15c-4-1-6 0-9 2-3-2-5-3-9-2z"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
+<symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
+<symbol id="i-share" viewBox="0 0 24 24"><path d="M12 16V3m-5 5 5-5 5 5M5 13v7h14v-7"/></symbol>
+<symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M5 16v5h14v-5"/></symbol>
+<symbol id="i-reset" viewBox="0 0 24 24"><path d="M4 10a8 8 0 1 1 1 8M4 4v6h6"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+<symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v6l4 2"/></symbol>
+<symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V3H3v14h5"/></symbol>
+<symbol id="i-settings" viewBox="0 0 24 24"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3" fill="var(--paper)"/><circle cx="16" cy="17" r="3" fill="var(--paper)"/></symbol>
+<symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 4 2c-1.5 1-1.5 1.5-1.5 3m0 3h.01"/></symbol>
+<symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+<symbol id="i-panel" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M14 4v16"/></symbol>
+<symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H5v18h14V8zM14 3v5h5"/></symbol>
+<symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5z"/></symbol>
+</defs></svg>
+<a class="skip-link" href="#workspace">Skip to editor</a>
+<header class="topbar">
+<button class="icon-button mobile-only" id="sidebar-toggle" aria-label="Open learning path" aria-expanded="false" aria-controls="learning-sidebar"><svg class="icon"><use href="#i-menu"/></svg></button>
+<a class="brand" href="./" aria-label="Mozhi playground home"><span class="brand-mark" lang="ta" aria-hidden="true">மொ</span><span>mozhi<span class="brand-divider">/</span><span class="brand-product">playground</span></span></a>
+<nav class="topnav" aria-label="Workspace"><button id="nav-studio" class="nav-button active">Studio</button><a id="nav-learn" class="nav-button" href="../learn/">Learn</a><button id="nav-examples" class="nav-button">Examples</button></nav>
+<button id="palette-trigger" class="search-trigger" aria-label="Search lessons, examples and commands"><svg class="icon"><use href="#i-search"/></svg><span>Find something...</span><kbd>Ctrl K</kbd></button>
+<div class="topbar-actions"><button class="icon-button" id="help-btn" aria-label="Help and keyboard shortcuts" data-tooltip="Shortcuts to keep you in flow"><svg class="icon"><use href="#i-help"/></svg></button><a class="github-link" href="https://github.com/sm1else-bot/mozhi" target="_blank" rel="noopener noreferrer">GitHub ↗</a><button id="share-btn" class="button button-outline"><svg class="icon"><use href="#i-share"/></svg><span>Share code</span></button></div>
+</header>
+<div class="app-layout">
+<aside id="learning-sidebar" class="sidebar" aria-label="Learning path">
+<div class="sidebar-heading"><span class="eyebrow">LEARN BY MAKING</span><button id="sidebar-close" class="icon-button mobile-only" aria-label="Close learning path"><svg class="icon"><use href="#i-close"/></svg></button></div>
+<h2>Your first steps</h2><p class="sidebar-intro">Small lessons. Real programs.<br>A language a little closer to home.</p>
+<div class="progress-summary"><span id="progress-label">0 of 8 completed</span><span id="progress-percent">0%</span></div><div class="progress-track" role="progressbar" aria-label="Learning progress" aria-valuemin="0" aria-valuemax="8" aria-valuenow="0" id="course-progress"><span id="progress-fill"></span></div>
+<nav id="lesson-list" class="lesson-list" aria-label="Lessons"></nav>
+<div class="sidebar-bottom"><span class="sidebar-mini-icon"><svg class="icon"><use href="#i-grid"/></svg></span><strong>A starting point for every idea.</strong><p>Explore complete examples, from a simple counter to your own library.</p><button id="browse-examples" class="text-button">Explore examples <svg class="icon"><use href="#i-arrow"/></svg></button></div>
+<div class="sidebar-footnote">Made for curiosity.<br>Built around Tamil-inspired grammar.</div>
+</aside>
+<button id="sidebar-scrim" class="scrim" hidden aria-label="Close learning path"></button>
+<main id="workspace" class="workspace" tabindex="-1">
+<section class="workspace-heading"><div><div class="breadcrumb"><span class="status-dot"></span>Your language. Your ideas.<span class="breadcrumb-divider">/</span><span id="current-section">FIRST STEPS</span></div><h1>A little Tamil.<span> A lot of possibility.</span></h1><p>Write it the way you say it. Make something that feels like you.</p></div><button id="guide-toggle" class="button button-quiet" aria-expanded="true" aria-controls="guide-panel" data-tooltip="Show or hide the lesson guide"><svg class="icon"><use href="#i-panel"/></svg><span>Lesson guide</span></button></section>
+<div class="workbench" id="workbench">
+<section class="editor-stack" aria-label="Code and results">
+<div class="editor-card">
+<div class="editor-toolbar"><div class="file-control"><svg class="icon file-icon"><use href="#i-file"/></svg><input id="filename" aria-label="Program filename" value="hello.mozhi" maxlength="80" spellcheck="false"><span class="file-dot" id="save-dot" data-tooltip="Your draft is saved in this browser"></span></div><div class="editor-tools"><button id="new-btn" class="small-text-button" data-tooltip="Start a fresh scratchpad">New</button><button class="icon-button" id="open-btn" aria-label="Open a Mozhi file" data-tooltip="Open a .mozhi or .txt file"><svg class="icon"><use href="#i-file"/></svg></button><button class="icon-button" id="download-btn" aria-label="Download program" data-tooltip="Download your .mozhi file (Ctrl S)"><svg class="icon"><use href="#i-download"/></svg></button><button class="icon-button" id="reset-btn" aria-label="Reset this lesson" data-tooltip="Restore this lesson's starting code"><svg class="icon"><use href="#i-reset"/></svg></button><details id="editor-settings" class="settings-menu"><summary class="icon-button" aria-label="Editor settings" data-tooltip="Font size, wrapping and draft recovery"><svg class="icon"><use href="#i-settings"/></svg></summary><div class="settings-popover"><strong>Make it comfortable</strong><div class="setting-row"><span>Code size</span><div><button id="font-minus" class="mini-button" aria-label="Smaller code text">A−</button><span id="font-value">14</span><button id="font-plus" class="mini-button" aria-label="Larger code text">A+</button></div></div><label class="setting-row"><span>Wrap long lines</span><input id="line-wrap" type="checkbox" checked></label><button id="restore-draft" class="small-text-button">Restore previous draft</button><span class="muted small">Drafts stay in this browser. No account needed.</span></div></details></div></div>
+<div class="code-area"><label for="code-editor" class="sr-only">Mozhi source code</label><textarea id="code-editor" spellcheck="false" aria-label="Mozhi source code"></textarea></div>
+<div class="editor-footer"><span id="cursor-position">Ln 1, Col 1</span><span id="line-count">1 line</span><span class="editor-tip">Hover a keyword to learn what it does</span><span>Spaces: 4</span><span>UTF-8</span></div>
+<div class="run-toolbar"><div class="run-actions"><button id="run-btn" class="button button-primary" disabled><svg class="icon"><use href="#i-play"/></svg>Run Mozhi <kbd>Ctrl ↵</kbd></button><button id="stop-btn" class="button button-stop" disabled data-tooltip="Stop the program (Ctrl Shift Enter)"><svg class="icon"><use href="#i-stop"/></svg>Stop</button><button id="retry-btn" class="button button-outline" hidden>Retry engine</button></div><label class="time-control" data-tooltip="Maximum run time. The timer pauses while waiting for input."><svg class="icon"><use href="#i-clock"/></svg><input id="time-limit" aria-label="Execution limit in seconds" type="number" min="0.1" max="3600" step="0.1" value="10"><span>s limit</span></label></div>
+</div>
+<section class="output-card" aria-label="Program results"><div class="output-toolbar"><div class="output-tabs" role="tablist" aria-label="Results"><button id="output-tab" class="output-tab active" role="tab" aria-selected="true" aria-controls="output-panel">Output <span id="result-dot" class="result-dot"></span></button><button id="history-tab" class="output-tab" role="tab" aria-selected="false" aria-controls="history-panel">Run history <span id="history-count" class="count-badge">0</span></button></div><div class="output-actions"><span id="run-duration" class="muted small"></span><button id="copy-output" class="icon-button" aria-label="Copy output" data-tooltip="Copy your last result"><svg class="icon"><use href="#i-copy"/></svg></button><button id="clear-output" class="small-text-button">Clear</button></div></div>
+<div id="output-panel" role="tabpanel" aria-labelledby="output-tab" class="output-panel"><div id="output-empty" class="output-empty"><span class="empty-icon"><svg class="icon"><use href="#i-play"/></svg></span><div><strong>A small line. A new possibility.</strong><p>Run your code to see what it says.</p></div></div><pre id="output" aria-label="Program output" tabindex="0"></pre><div id="error-help" class="error-help" hidden><strong id="error-title"></strong><p id="error-detail"></p><button id="go-to-error" class="text-button">Go to the line <svg class="icon"><use href="#i-arrow"/></svg></button></div><form id="input-container" class="input-card" hidden><label for="mozhi-input" id="input-label">Your program is asking</label><div class="input-row"><input type="text" id="mozhi-input" autocomplete="off" placeholder="Type your answer..."><button type="submit" class="button button-primary">Send <svg class="icon"><use href="#i-arrow"/></svg></button></div><span class="small muted">Press Enter to send. Your execution timer is paused.</span></form></div>
+<div id="history-panel" class="history-panel" role="tabpanel" aria-labelledby="history-tab" hidden><div class="history-heading"><span class="muted small">Your last 8 runs, saved only here.</span><button id="clear-history" class="small-text-button">Clear history</button></div><div id="history-list"></div></div>
+</section>
+</section>
+<aside id="guide-panel" class="guide-panel" aria-label="Lesson guide"><div class="guide-tabs" role="tablist" aria-label="Learning resources"><button id="lesson-tab" class="guide-tab active" role="tab" aria-selected="true" aria-controls="lesson-panel"><svg class="icon"><use href="#i-book"/></svg>Lesson</button><button id="reference-tab" class="guide-tab" role="tab" aria-selected="false" aria-controls="reference-panel"><svg class="icon"><use href="#i-code"/></svg>Quick reference</button></div><div id="lesson-panel" class="lesson-panel" role="tabpanel" aria-labelledby="lesson-tab"></div><div id="reference-panel" class="reference-panel" role="tabpanel" aria-labelledby="reference-tab" hidden><div class="reference-heading"><h2>A word goes a long way.</h2><p>Find a keyword, understand it, try it.</p><label class="reference-search"><svg class="icon"><use href="#i-search"/></svg><input id="reference-search" placeholder="Find a keyword..." aria-label="Filter keyword reference"></label></div><div id="reference-list"></div></div><div class="guide-note"><svg class="icon"><use href="#i-spark"/></svg><span>The action comes last.<br>That's the idea behind Mozhi.</span></div></aside>
+</div>
+<footer class="workspace-footer"><div class="engine-status"><span class="status-dot" id="engine-dot"></span><span id="status" role="status">Loading engine...</span></div><span id="save-status">Drafts stay on your device</span><button id="shortcuts-btn" class="small-text-button">Keyboard shortcuts <kbd>?</kbd></button></footer>
+</main>
+</div>
+<dialog id="examples-dialog" class="modal examples-modal" aria-labelledby="examples-title"><div class="modal-heading"><div><span class="eyebrow">THE EXAMPLE COLLECTION</span><h2 id="examples-title">A place to start.</h2><p>Open a working program. Pull it apart. Make it your own.</p></div><button class="icon-button" data-close aria-label="Close examples"><svg class="icon"><use href="#i-close"/></svg></button></div><label class="modal-search"><svg class="icon"><use href="#i-search"/></svg><input id="example-search" placeholder="Search examples..." aria-label="Search examples"></label><div id="example-filters" class="filter-list"></div><div id="example-grid" class="example-grid"></div></dialog>
+<dialog id="palette-dialog" class="modal palette-modal" aria-label="Search lessons, examples and commands"><div class="palette-search"><svg class="icon"><use href="#i-search"/></svg><input id="palette-input" placeholder="A lesson, an example, a command..." role="combobox" aria-label="Search workspace" aria-controls="palette-results" aria-expanded="true" autocomplete="off"><kbd>Esc</kbd></div><div id="palette-results" role="listbox" aria-label="Search results"></div><div class="palette-footer"><span>↑ ↓ to explore</span><span>↵ to open</span><span>Esc to close</span></div></dialog>
+<dialog id="help-dialog" class="modal help-modal" aria-labelledby="help-title"><div class="modal-heading"><div><span class="eyebrow">GET COMFORTABLE</span><h2 id="help-title">A few things worth knowing.</h2></div><button class="icon-button" data-close aria-label="Close help"><svg class="icon"><use href="#i-close"/></svg></button></div><div class="help-body"><div class="help-callout"><svg class="icon"><use href="#i-book"/></svg><p>Start with the eight short lessons on the left. Run a lesson's program to check your understanding and track your progress.</p></div><dl class="shortcut-list"><div><dt>Run your program</dt><dd><kbd>Ctrl</kbd> <kbd>Enter</kbd></dd></div><div><dt>Stop execution</dt><dd><kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>Enter</kbd></dd></div><div><dt>Find anything</dt><dd><kbd>Ctrl</kbd> <kbd>K</kbd></dd></div><div><dt>Download a program</dt><dd><kbd>Ctrl</kbd> <kbd>S</kbd></dd></div><div><dt>Indent / unindent</dt><dd><kbd>Tab</kbd> / <kbd>Shift Tab</kbd></dd></div><div><dt>Show this help</dt><dd><kbd>?</kbd></dd></div></dl><p class="small muted">On a Mac, use Command instead of Ctrl. Drafts, progress and run history stay in this browser. Shared links contain your code, so only share what you intend others to read.</p><p class="small muted">Code runs in a worker with a time limit and Stop control. This is an experimental language, not a security sandbox.</p></div></dialog>
+<dialog id="share-dialog" class="modal compact-modal" aria-labelledby="share-title"><div class="modal-heading"><div><span class="eyebrow">PASS THE IDEA ON</span><h2 id="share-title">Share your program.</h2></div><button class="icon-button" data-close aria-label="Close sharing"><svg class="icon"><use href="#i-close"/></svg></button></div><div class="modal-body"><p>The code travels in the link. No account or upload required. Anyone with this link can read it.</p><label for="share-url" class="field-label">Program link</label><textarea id="share-url" rows="3" readonly></textarea><button id="copy-share" class="button button-primary"><svg class="icon"><use href="#i-copy"/></svg>Copy link</button><p id="share-feedback" class="small muted" role="status"></p></div></dialog>
+<dialog id="confirm-dialog" class="modal compact-modal" aria-labelledby="confirm-title"><div class="modal-body"><span class="eyebrow">KEEP YOUR WORK</span><h2 id="confirm-title">Replace your current code?</h2><p>Your edited program will be kept as the previous draft on this device when storage is available. You can also download a copy first.</p><div class="confirm-actions"><button id="confirm-cancel" class="button button-outline">Keep editing</button><button id="confirm-replace" class="button button-primary">Replace code</button></div></div></dialog>
+<input id="file-input" type="file" accept=".mozhi,.txt" hidden><div id="tooltip" class="tooltip" role="tooltip" hidden></div><div id="toast" class="toast" role="status" hidden></div>
+</body></html>
