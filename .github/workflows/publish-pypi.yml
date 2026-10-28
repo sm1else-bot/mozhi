@@ -1,0 +1,54 @@
+name: Publish approved PyPI package
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Approved version tag
+        type: string
+        required: true
+      build_run_id:
+        description: Successful native distribution run for the exact tag commit
+        type: string
+        required: true
+      approve_pypi_publication:
+        description: 'I approve the upload and have configured PyPI name ownership and Trusted Publishing'
+        type: boolean
+        default: false
+        required: true
+permissions:
+  contents: read
+jobs:
+  publish:
+    if: inputs.approve_pypi_publication
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      contents: read
+      actions: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.tag }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          name: prepared-release
+          run-id: ${{ inputs.build_run_id }}
+          github-token: ${{ github.token }}
+          path: prepared
+      - name: Validate native build evidence and select only Python artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.tag }}
+          BUILD_RUN_ID: ${{ inputs.build_run_id }}
+        run: |
+          python tools/publish_release.py --directory prepared --tag "$RELEASE_TAG" --run-id "$BUILD_RUN_ID" --validate-only
+          python -c "from pathlib import Path; import runpy,shutil; v=runpy.run_path('src/mozhi/_version.py')['__version__']; out=Path('pypi-dist'); out.mkdir(); [shutil.copyfile(Path('prepared/releases')/name,out/name) for name in [f'mozhi-{v}.tar.gz',f'mozhi-{v}-py3-none-any.whl']]"
+      - name: Publish using an explicitly configured PyPI Trusted Publisher
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: pypi-dist

@@ -1,0 +1,8 @@
+# Seiy moolam factorial thirumba koopidalam.
+seiy factorial(n):
+    n <= 1 na:
+        1 thirumbu
+    mudivu
+    n * factorial(n - 1) thirumbu
+mudivu
+factorial(6) sollu

@@ -1,0 +1,143 @@
+name: Build and validate Mozhi distributions
+
+on:
+  push:
+    branches: [standalone-distribution]
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  native:
+    name: Native ${{ matrix.target }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: windows-2022
+            target: windows-x64
+            architecture: x64
+          - runner: macos-15
+            target: macos-arm64
+            architecture: arm64
+          - runner: macos-15-intel
+            target: macos-x64
+            architecture: x64
+          - runner: ubuntu-22.04
+            target: linux-x64
+            architecture: x64
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 25
+    defaults:
+      run:
+        shell: bash
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: '1'
+      HOMEBREW_NO_INSTALL_CLEANUP: '1'
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+          architecture: ${{ matrix.architecture }}
+          cache: pip
+          cache-dependency-path: requirements-build.txt
+      - run: python -m pip install -r requirements-build.txt
+      - name: Validate source and build wheels
+        run: |
+          python -m unittest discover -s tests -q
+          python -m build
+          python -m twine check dist/*.whl dist/*.tar.gz
+          python tools/smoke_wheel.py dist/mozhi-*-py3-none-any.whl --version "$(python -c "exec(open('src/mozhi/_version.py').read()); print(__version__)")"
+      - name: Build, extract and execute the native archive
+        run: |
+          python tools/build_standalone.py
+          python tools/smoke_archive.py dist/releases
+          python tools/prepare_release.py --allow-partial
+      - name: Install, reinstall and uninstall native package
+        if: runner.os == 'macOS' || runner.os == 'Windows'
+        run: python tools/test_package_managers.py --disposable-runner
+      - name: Build and install the Linux package
+        if: runner.os == 'Linux'
+        run: |
+          python tools/build_linux_packages.py
+          bash -n dist/package-managers/linux/PKGBUILD
+          sudo dpkg -i dist/linux-packages/*.deb
+          mozhi --version
+          sudo dpkg -i dist/linux-packages/*.deb
+          sudo dpkg -r mozhi
+          test ! -e /usr/bin/mozhi
+      - name: Upload tested native artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-${{ matrix.target }}
+          path: dist/releases/*
+          if-no-files-found: error
+      - name: Upload tested Chocolatey package
+        if: matrix.target == 'windows-x64'
+        uses: actions/upload-artifact@v4
+        with:
+          name: chocolatey-package
+          path: dist/package-managers/chocolatey/*.nupkg
+          if-no-files-found: error
+      - name: Upload tested Linux packages
+        if: matrix.target == 'linux-x64'
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-packages
+          path: dist/linux-packages/*
+          if-no-files-found: error
+      - name: Upload Python distributions once
+        if: matrix.target == 'linux-x64'
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-distributions
+          path: |
+            dist/*.whl
+            dist/*.tar.gz
+          if-no-files-found: error
+
+  assemble:
+    needs: native
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements-build.txt
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: native-*
+          path: dist/releases
+          merge-multiple: true
+      - uses: actions/download-artifact@v4
+        with:
+          name: python-distributions
+          path: dist/releases
+      - uses: actions/download-artifact@v4
+        with:
+          name: chocolatey-package
+          path: dist/releases
+      - uses: actions/download-artifact@v4
+        with:
+          name: linux-packages
+          path: dist/releases
+      - name: Validate complete release set and prepare package managers
+        env:
+          REF_NAME: ${{ github.ref_name }}
+          REF_TYPE: ${{ github.ref_type }}
+        run: |
+          python tools/prepare_release.py
+          python -c "import os,runpy; v=runpy.run_path('src/mozhi/_version.py')['__version__']; assert os.environ['REF_TYPE']!='tag' or os.environ['REF_NAME']=='v'+v, 'Tag/version mismatch'"
+          ruby -c dist/package-managers/homebrew-mozhi/Formula/mozhi.rb
+      - uses: actions/upload-artifact@v4
+        with:
+          name: prepared-release
+          path: |
+            dist/releases/*
+            dist/package-managers/*
+          if-no-files-found: error
+      - run: echo 'Prepared only. No GitHub Release or registry publication occurs in this workflow.'

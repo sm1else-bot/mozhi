@@ -1,0 +1,44 @@
+name: Publish approved release
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tested version tag, e.g. v0.1.0'
+        required: true
+        type: string
+      build_run_id:
+        description: Successful native distribution run for that exact tag commit
+        required: true
+        type: string
+      approve_publication:
+        description: 'I explicitly approve publishing this tested GitHub Release'
+        required: true
+        default: false
+        type: boolean
+permissions:
+  contents: read
+jobs:
+  publish:
+    if: inputs.approve_publication
+    environment: release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.tag }}
+          fetch-depth: 0
+      - uses: actions/download-artifact@v4
+        with:
+          name: prepared-release
+          run-id: ${{ inputs.build_run_id }}
+          github-token: ${{ github.token }}
+          path: prepared
+      - name: Validate approval, native evidence and checksums before publication
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.tag }}
+          BUILD_RUN_ID: ${{ inputs.build_run_id }}
+        run: python tools/publish_release.py --directory prepared --tag "$RELEASE_TAG" --run-id "$BUILD_RUN_ID" --approved

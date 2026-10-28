@@ -1,0 +1,6 @@
+# Pathinoru nodigal odattum; CLI-il paththu nodi thadai illai.
+start = neram() vechukko
+neram() - start < 11 varaikum:
+    count = 1 vechukko
+mudivu
+"Mudinthathu" sollu

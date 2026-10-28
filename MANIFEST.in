@@ -1,0 +1,9 @@
+include LICENSE README.md PROVENANCE.md LANGUAGE.md
+recursive-include examples *.mozhi
+recursive-include tests *.py
+recursive-include tools *.py
+include requirements-build.txt
+include packaging/mozhi.spec
+recursive-include packaging *.py *.json *.md
+include src/mozhi.py
+include playground/runtime.py

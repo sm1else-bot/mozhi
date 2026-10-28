@@ -10,4 +10,4 @@ Propose syntax changes with their Tamil grammatical rationale and a migration ex
 
 Do not rewrite archival commits, change recovered source hashes, backdate new work, or add private conversation exports. New work uses its actual commit time. Read PROVENANCE.md before changing historical documentation. Do not change Linguist attributes to disguise `.mozhi` as another language.
 
-No package publication or release automation is configured. Contributions are reviewed before publication. Project code is MIT licensed; externally loaded browser dependencies retain their own licenses.
+Native builds and release preparation are automated; publication requires explicit maintainer approval. See docs/distribution.md for the checklist and external registry steps. Edit src/mozhi/core.py for language behavior, src/mozhi/cli.py for terminal adapters, and src/mozhi/_version.py for the single version. Run tests with requirements-build.txt installed to include package-manager validation. Project code is MIT licensed; externally loaded browser dependencies retain their own licenses.

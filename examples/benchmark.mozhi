@@ -1,0 +1,10 @@
+# Neram alandhu oru siriya kanakku seiyalam.
+start = neram() vechukko
+i = 0 vechukko
+total = 0 vechukko
+i < 10000 varaikum:
+    total = total + i vechukko
+    i = i + 1 vechukko
+mudivu
+total sollu
+"Seconds: " kooda (neram() - start) sollu

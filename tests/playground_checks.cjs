@@ -47,6 +47,9 @@ const server = http.createServer((req, res) => {
         await page.goto(url);
         await ready();
         passed('engine initializes in a worker');
+        assert.equal((await finish('inaithu(pirithu("a,b", ","), "-") sollu\nver(9) sollu\nseeratra(7, 7) sollu\n')).trim(), 'a-b\n3\n7');
+        assert.ok((await finish('padi("host-private.txt") sollu\n')).includes('File I/O is local-only'));
+        passed('shared standard-library functions and explicit browser file-I/O boundary');
         for (const [name, expected] of [['demo','1\n2\n3'], ['library','Thiruvalluvar'], ['gossip','See you tomorrow']]) {
             const output = await finish(fs.readFileSync(path.join(root, 'examples', name + '.mozhi'), 'utf8'));
             assert.ok(output.includes(expected), output);
