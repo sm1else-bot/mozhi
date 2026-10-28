@@ -18,6 +18,10 @@ item = arr[0] vechukko
 ### Description
 Arrays are 0-indexed sequences. The interpreter stores them internally as Python lists, meaning they support arbitrary value types (including nested arrays or objects).
 
+Use `neelam(arr)` for length. Negative indices count from the end; indices must
+be integers, not booleans, and within bounds. Indexed assignment such as
+`arr[0] = 5 vechukko` is not implemented.
+
 ---
 
 ## Modifying Arrays: `ullapodu` and `veliyapodu`
@@ -34,6 +38,9 @@ value ullapodu array_variable
 
 ### 2. Popping: `veliyapodu` (Pop)
 Removes the last element from the list.
+
+Pop is a statement, not a value-returning expression. Popping an empty array
+reports an error. Both operations mutate the existing array.
 
 #### Syntax
 ```text
@@ -77,3 +84,4 @@ scores sollu
 ## Next Steps
 * Create structures and classes with [Object-Oriented Programming (OOP)](oop.md).
 * Walk through a complete app example in the [Interactive Calculator](../examples/calculator.md).
+* Run `arrays_loops.mozhi` from the [CLI example collection](../examples/cli-programs.md).

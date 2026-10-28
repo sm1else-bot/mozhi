@@ -39,6 +39,7 @@ jobs:
         run: |
           python -m unittest discover -s tests -q
           python tools/build_site.py
+          python tools/check_docs.py
       - name: Check navigation and documentation search
         env:
           MOZHI_TEST_BROWSER: /usr/bin/google-chrome

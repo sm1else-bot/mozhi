@@ -40,6 +40,11 @@ object_variable = ClassName porul vechukko
 
 Initializers are ordinary methods and must be called explicitly after `ClassName porul`. Method parameter names must be unique, a method needs an instance parameter, and calls must supply the declared number of arguments. Missing properties and methods produce line-numbered errors in both adapters.
 
+See [functions](functions.md) for return values and enclosing scope behavior.
+There is no automatic constructor invocation or inheritance syntax in this
+release. Run the complete example below from a saved `.mozhi` file using
+[the CLI](../cli/programs.md), or enter the class as a [REPL block](../cli/repl.md).
+
 ---
 
 ## Code Examples

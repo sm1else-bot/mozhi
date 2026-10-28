@@ -26,3 +26,8 @@ true illaiyal missing_variable sollu
 ```
 
 This prints `false` then `true` without evaluating the division or missing variable. The binary logical operators return booleans, not operand values. The CLI and browser use the same rules.
+
+Save a complete example as `operators.mozhi` and run `mozhi run operators.mozhi`.
+`mozhi check operators.mozhi` verifies syntax but does not evaluate expressions
+or detect division by zero. See [CLI reference](../cli/index.md) and
+[errors](../errors.md).

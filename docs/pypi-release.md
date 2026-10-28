@@ -9,9 +9,11 @@ is retained as the release-maintainer procedure.
 Release source: `d213a6d5432af7fc0085aa33e28268bd5861bffd`, tag `v0.1.0`.
 [Publishing run](https://github.com/sm1else-bot/mozhi/actions/runs/40770330529).
 
-PyPI is the first public package channel. Preparing its release does not
+PyPI is the first public package channel. [Installation](install.md) now also
+documents the public Homebrew tap, native archives and downloadable `.deb`.
+This page describes the PyPI-specific maintainer process. Preparing a release does not
 authorize uploads to PyPI, a GitHub Release, Homebrew, WinGet, Chocolatey or Linux
-registries. All cross-platform packaging infrastructure remains available for later.
+registries. Each channel still requires its own explicit publication approval.
 
 ## Maintainer account setup
 

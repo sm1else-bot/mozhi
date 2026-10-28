@@ -54,6 +54,16 @@ const server = http.createServer((req, res) => {
         await page.locator('.md-search-result__item').first().waitFor();
         assert.deepEqual(errors, []);
         console.log('PASS phone navigation, documentation search and layout under a repository path');
+        await page.goto(base + '/learn/install/');
+        assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false, 'Installation tables and download commands must fit a phone');
+        await page.setViewportSize({width:1440,height:1000});
+        await page.getByRole('link', {name:'Command Reference', exact:true}).first().click();
+        await page.waitForURL('**/learn/cli/');
+        await page.locator('article').getByRole('link', {name:'REPL behavior', exact:true}).click();
+        await page.waitForURL('**/learn/cli/repl/');
+        assert.ok((await page.locator('article').innerText()).includes('Multiline blocks'));
+        assert.deepEqual(errors, []);
+        console.log('PASS mobile installation page and CLI-to-REPL navigation');
     } catch (error) {console.error(error);process.exitCode=1;}
     finally {if (browser) await browser.close();server.close();}
 })();

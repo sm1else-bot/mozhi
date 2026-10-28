@@ -1,8 +1,20 @@
-# A little Tamil. A lot to build.
+# Mozhi documentation
 
 > These examples run in the current CLI and browser adapters. Both input spellings, `kelu` and `ketukko`, are supported. See the repository README and LANGUAGE.md for execution controls and current limitations.
 
-Start with [Running Mozhi](runtime.md) for CLI commands and playground controls. See [Operators](basics/operators.md) for exponentiation and short-circuit rules, and [Errors and validation](errors.md) for diagnostics and recovery.
+## Start here
+
+| Task | Guide |
+| --- | --- |
+| Install with `.deb`, Homebrew, PyPI or native archive | [Installation](install.md) |
+| Create and run a UTF-8 program | [First program](cli/programs.md) |
+| Look up commands, streams and exit statuses | [CLI reference](cli/index.md) |
+| Experiment interactively | [REPL](cli/repl.md) |
+| Find runnable local programs | [CLI examples](examples/cli-programs.md) |
+| Resolve an install or execution problem | [Troubleshooting](troubleshooting.md) |
+
+See [Running Mozhi](runtime.md) for browser controls, [Operators](basics/operators.md)
+for precedence and short-circuit rules, and [Errors](errors.md) for diagnostics.
 
 Mozhi is an experimental programming language with Tamil-inspired, verb-final syntax. These pages explain the language, show working programs, and document its current limits. Studio contains the interactive lessons; Learn is the full language guide.
 
@@ -31,7 +43,12 @@ Learn how to define variables with `vechukko`, output strings with `sollu`, and 
 Discover loops (`varaikum`) and conditionals (`na` / `illana`) to make programs make decisions.
 
 ### [3. Advanced OOP & Arrays](advanced/oop.md)
-Learn classes (`vagai`), instantiation (`porul`), instance attributes (`naan.property`), and lists (`varisai`).
+Learn classes (`vagai`), instantiation (`porul`), instance attributes (`naan.property`), and array literals such as `[1, 2, 3]`.
+
+### [4. Functions](advanced/functions.md)
+Define reusable functions with `seiy`, return with `thirumbu`, and use recursion.
+The [standard library](standard-library.md) covers conversion, strings, timing,
+randomness and local file operations.
 
 ---
 
@@ -40,7 +57,7 @@ Learn classes (`vagai`), instantiation (`porul`), instance attributes (`naan.pro
 Here is a quick overview of what Mozhi looks like:
 
 ```text
-# Simple greeter in Mozhi
+# Oru siriya varaverpu.
 name = ketukko("Enna per? ") vechukko
 greeting = "Vanakkam, " kooda name vechukko
 greeting sollu

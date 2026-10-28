@@ -23,3 +23,15 @@ The author's language concept was developed with AI implementation assistance, i
 The first Lark and recursive-descent sources survive in Git history at the same original filename, `mozhi.py`. Publication initially preserved the June expanded CLI and a later independent embedded browser runtime. Modern layout changes, corrected docs, MIT licensing, tests, and provenance were added with actual October dates.
 
 On October 27, modern runtime repairs fixed scope updates, method closures and properties, program termination, exponentiation, short-circuit evaluation, and diagnostics. Browser execution moved into a worker with Stop, an input-aware execution limit and engine recovery. Both input spellings became aliases. The asynchronous browser engine is generated from the core parser/runtime to keep these repairs consistent. These changes are modern development; the archival commits and original source digests remain unchanged.
+
+On October 28, 2026, version 0.1.0 became the first public PyPI release through
+GitHub Actions Trusted Publishing. Native Windows x64, macOS ARM64/Intel and
+Linux x64 archives followed on GitHub Releases, with the maintainer Homebrew tap.
+A downloadable amd64 `.deb` was then added and verified on Ubuntu 22.04, Ubuntu
+24.04 and Debian 12. These package publications do not imply acceptance into
+Homebrew/core, WinGet, Chocolatey, AUR, Debian or Fedora's official registries.
+
+The interpreter remains Python-based and interpreted; native packages bundle
+Python. The release source is tagged `v0.1.0`. Contemporary publication events
+and hashes are recorded under [evidence/releases](evidence/releases/), separate
+from the frozen historical [snapshot index](evidence/snapshots.json).

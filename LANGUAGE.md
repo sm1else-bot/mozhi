@@ -2,6 +2,11 @@
 
 This describes the current CLI and generated asynchronous browser adapter unless a distinction is stated. It is a working language note, not a complete formal specification.
 
+[Install the interpreter](docs/install.md), then use the
+[CLI reference](docs/cli/index.md), [REPL guide](docs/cli/repl.md) or
+[function guide](docs/advanced/functions.md). The [standard library](docs/standard-library.md)
+documents string helpers, timing, random values and local file I/O.
+
 ## Grammar shape
 
 ```mozhi
@@ -69,3 +74,10 @@ Block updates in both adapters search parent environments; new variables are cre
 Indentation must follow a colon and dedent to an existing block level. Tabs expand to four columns; mixing tabs and spaces in a single indentation prefix is rejected. Function/method parameters must be unique and supplied in the correct count. Methods require an instance parameter. `nillu` and `thodaru` must belong to a loop in the current function; `thirumbu` requires a function or method. Array indices must be integers, not booleans. Errors include the failing statement line.
 
 The playground's worker can be stopped or automatically terminated after its configurable execution budget (10 seconds by default). Input waits pause that budget. The CLI has no execution limit; intentionally endless programs require Ctrl+C or an external timeout. Runtime errors stop the current run and leave the playground ready for another program.
+
+`mozhi check file.mozhi` tokenizes/parses without evaluating statements, so it
+does not check runtime types or name resolution. Files and file-built-in paths
+resolve from the process working directory. File I/O is rejected in the browser.
+Ctrl+C ends a CLI file run with status 130, while the REPL cancels the entry and
+retains its environment. A failing program may have already produced output or
+changed local files; execution is not transactional. See [errors](docs/errors.md).

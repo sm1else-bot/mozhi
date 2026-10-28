@@ -22,6 +22,10 @@ mudivu
 4. If falsy and an `illana:` branch is present, the else body runs in its own child block scope.
 5. The block ends with the keyword `mudivu`.
 
+`None` above describes an internal no-value result, not a Mozhi literal keyword.
+Use literal `true` and `false` when expressing boolean values. Every nested
+conditional needs its own `mudivu`; the [REPL](../cli/repl.md) waits for it.
+
 ---
 
 ## Comparison Operators

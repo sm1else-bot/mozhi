@@ -4,6 +4,8 @@ site_description: Professional documentation for the Tanglish-based Mozhi progra
 repo_url: https://github.com/sm1else-bot/mozhi
 repo_name: sm1else-bot/mozhi
 copyright: Mozhi · An experimental language with Tamil-inspired syntax
+exclude_docs: |
+  /overrides/
 theme:
   name: material
   custom_dir: docs/overrides
@@ -39,10 +41,13 @@ markdown_extensions:
 
 nav:
   - Welcome: index.md
-  - Running Mozhi: runtime.md
-  - Distribution: distribution.md
-  - First PyPI Release: pypi-release.md
-  - Standard Library: standard-library.md
+  - Getting Started:
+      - Installation: install.md
+      - First Program: cli/programs.md
+  - Command Line:
+      - Command Reference: cli/index.md
+      - Interactive REPL: cli/repl.md
+      - Troubleshooting: troubleshooting.md
   - Basics:
       - Variables: basics/variables.md
       - Input & Output: basics/io.md
@@ -51,8 +56,16 @@ nav:
       - Conditionals: control-flow/conditionals.md
       - Loops: control-flow/loops.md
   - Advanced Features:
+      - Functions: advanced/functions.md
       - Arrays (Varisai): advanced/arrays.md
       - Object-Oriented (OOP): advanced/oop.md
   - Examples:
+      - CLI Programs: examples/cli-programs.md
       - Interactive Calculator: examples/calculator.md
-  - Errors & Validation: errors.md
+  - Runtime Reference:
+      - Running Mozhi: runtime.md
+      - Standard Library: standard-library.md
+      - Errors & Validation: errors.md
+  - Maintainers:
+      - Distribution: distribution.md
+      - First PyPI Release: pypi-release.md

@@ -2,18 +2,23 @@
 
 ## Command line
 
-Install from the repository with Python 3.10 or later:
+Use [Installation](install.md) to choose the public `.deb`, Homebrew, PyPI or
+native archive. PyPI needs Python 3.10+; the other options bundle Python.
 
 ```sh
-python -m pip install -e .
 mozhi --version
-mozhi run examples/hello.mozhi
-mozhi examples/fibonacci.mozhi
-mozhi check examples/file_io.mozhi
+mozhi run hello.mozhi
+mozhi check hello.mozhi
 mozhi repl
 ```
 
-The installed command and `python -m mozhi` work from any directory. `run` and shorthand accept relative/absolute paths and UTF-8 source. `check` tokenizes and parses without execution; it is not a static type checker. `mozhi` alone shows help. The legacy `python src/mozhi.py` adapter still runs its built-in example without arguments or with `--example`.
+Create `hello.mozhi` with [the first-program guide](cli/programs.md).
+[Command reference](cli/index.md) covers arguments and streams;
+[REPL](cli/repl.md) covers multiline input and recovery;
+[troubleshooting](troubleshooting.md) covers PATH and installation problems.
+The Python installation also supports `python -m mozhi`. The legacy
+`python src/mozhi.py` adapter still runs its built-in example without arguments
+or with `--example`.
 
 Exit codes are 0 for success, 1 for language/file errors, 2 for usage errors, and 130 for Ctrl+C. Output goes to stdout; errors include the filename and available statement line on stderr. Local programs are not subject to the browser timeout.
 
@@ -75,7 +80,7 @@ python tools/sync_playground.py
 python -m unittest discover -s tests -v
 ```
 
-The regression suite checks generation freshness and exercises both adapters in bounded subprocesses. Optional real-browser tests require Node.js 20 or later:
+The regression suite checks generation freshness and exercises both adapters in bounded subprocesses. After building the site, `python tools/check_docs.py` checks source links, rendered anchors and runnable snippets. Optional real-browser tests require Node.js 20 or later:
 
 ```sh
 npm ci

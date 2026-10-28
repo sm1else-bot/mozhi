@@ -10,7 +10,7 @@ package versions derive from it.
 
 [Mozhi 0.1.0 is published on PyPI](https://pypi.org/project/mozhi/0.1.0/), the first public distribution channel. Follow the
 [first PyPI release guide](pypi-release.md) for exact account and Trusted
-Publishing setup. [The maintainer Homebrew tap](https://github.com/sm1else-bot/homebrew-mozhi) is also public, backed by the tested native GitHub Release assets. WinGet, Chocolatey and Linux registry entries remain prepared for later publication.
+Publishing setup. [The maintainer Homebrew tap](https://github.com/sm1else-bot/homebrew-mozhi) and a downloadable Debian package are also public, backed by tested native GitHub Release assets. See [Installation](install.md) for user commands and the [CLI reference](cli/index.md) for execution. WinGet, Chocolatey, AUR and official Linux registry entries remain unpublished.
 
 This repository prepares distributions; preparation is not registry acceptance.
 No actual release, PyPI upload, tap publication, or community submission is
@@ -25,7 +25,7 @@ preparation only. Publication is a separately approved manual workflow.
 | WinGet | Validated `jessenth.Mozhi` version/installer/locale manifests, portable x64 ZIP | Submit to `microsoft/winget-pkgs` and pass review |
 | Chocolatey | Embedded official archive, checksum validation, shim install/uninstall, versioned fallback URL, nupkg | Account, package-ID ownership, community moderation |
 | AUR | Generated `mozhi-bin` PKGBUILD with exact archive digest | AUR account/SSH key, name check and maintenance |
-| Debian/Ubuntu | Control metadata, `.deb` builder and native smoke/install/remove checks | Distro policy/review or approved direct-download packaging |
+| Debian/Ubuntu | Bundled amd64 `.deb`, checksum and public install/reinstall/remove checks | [0.1.0 direct download published](https://github.com/sm1else-bot/mozhi/releases/download/v0.1.0/mozhi_0.1.0_amd64.deb); no official APT archive or custom repository |
 | Fedora | RPM spec and optional rpmbuild foundation | Fedora review, source packaging policy, maintained submission |
 
 `jessenth.Mozhi` is the namespace explicitly selected by the maintainer, not a
@@ -47,6 +47,10 @@ There is no Windows ARM64, Linux ARM64 or universal macOS artifact yet. Do not
 relabel an x64 binary as ARM64 or cross-build with PyInstaller. Native tests are
 authoritative; old OS versions not exercised by those runners are not promised.
 The Python wheel supports Python 3.10+, with compatibility CI on 3.10–3.14.
+
+The public `.deb` also passed clean-container installation, CLI/REPL/check,
+reinstall and removal on Ubuntu 22.04, Ubuntu 24.04 and Debian 12. See
+[the verification run](https://github.com/sm1else-bot/mozhi/actions/runs/40776472622).
 
 ## Build locally
 
@@ -83,6 +87,8 @@ mozhi-<version>-macos-x64.tar.gz
 mozhi-<version>-linux-x64.tar.gz
 mozhi-<version>-py3-none-any.whl
 mozhi-<version>.tar.gz
+mozhi_<version>_amd64.deb
+mozhi_<version>_amd64.deb.sha256
 SHA256SUMS
 ```
 
@@ -91,6 +97,11 @@ Python/PyInstaller notices, and `build-info.json`. The latter records the native
 target, Python/bundler versions, CLI/core source digests and smoke-test evidence.
 Checksums and source digests are validated again when aggregating. A changed
 interpreter requires rebuilding the native binaries; stale archives are rejected.
+
+The 0.1.0 `.deb` was appended to the existing release with its own `.sha256`
+receipt. The first release's `SHA256SUMS` still covers its original six files;
+it was not replaced. Release receipts in `evidence/releases/` distinguish the
+PyPI, native/Homebrew and Debian publication events.
 
 PyInstaller and the build front end are pinned in `requirements-build.txt`.
 Archive member timestamps/order/ownership are normalized. OS images, transitive
@@ -118,13 +129,20 @@ understanding their effects; the helper requires `--disposable-runner`.
 WinGet metadata is validated against vendored official 1.10.0 schemas, and can be
 checked with `winget validate --manifest <generated-version-directory>`. Full
 WinGet install/upgrade/uninstall against its official URL must be repeated after
-the approved release exists; before publication that URL deliberately has no
-download to install. The contained ZIP is already exercised independently.
+the approved release exists. Version 0.1.0 now has a public Windows ZIP, but its
+WinGet submission/install flow has not been completed. For a future unreleased
+version the URL has no download yet. The ZIP is exercised independently.
 
 Linux builds `.deb` when `dpkg-deb` exists, tests extracted execution, and CI
 installs/reinstalls/removes it. If `rpmbuild` is available the helper builds an RPM;
 otherwise it explicitly reports an unbuilt foundation. AUR scripts receive shell
 syntax checks. None of this constitutes Debian, Fedora or AUR acceptance.
+
+The manual **Verify public Debian package** workflow downloads the exact
+versioned `.deb` and checksum from GitHub, verifies them, installs with APT in
+disposable Ubuntu/Debian containers, exercises the installed CLI with Python
+removed from PATH, then reinstalls and removes the package. It does not publish
+anything or add an APT repository.
 
 ## Package-manager publication
 
@@ -162,13 +180,17 @@ verification/VirusTotal and moderation. Unsigned PyInstaller files can attract
 false positives; investigate rather than disabling endpoint protection.
 
 **PyPI:** version 0.1.0 is public and `pip install mozhi` is verified. For a future release, run `python -m build`, `python -m twine check dist/*.whl dist/*.tar.gz`,
-then install the wheel from outside the checkout. Configure PyPI Trusted
-Publishing for this repository's approved publishing workflow, or use Twine with
-a scoped credential stored outside the repository. Verify name ownership before
-the first upload. Only then advertise `pip install mozhi`. Pip users need Python;
-native executable users do not.
+then install the wheel and sdist from outside the checkout. Use the configured
+PyPI Trusted Publisher and protected `pypi` environment through the separately
+approved workflow. Its post-upload verification checks actual registry hashes
+and fresh installation. Pip users need Python; native users do not.
 
-**Linux:** review generated `linux/PKGBUILD`, `linux/debian/` and `linux/mozhi.spec`.
+**Linux:** the approved 0.1.0 `.deb` is public as a direct download. Use
+[the installation guide](install.md#debian-and-ubuntu) to verify/install it and
+the public verification workflow before announcing a subsequent package.
+No APT signing key or repository has been created.
+
+For future registry work, review generated `linux/PKGBUILD`, `linux/debian/` and `linux/mozhi.spec`.
 The binary PKGBUILD is for `mozhi-bin` and conflicts with/provides `mozhi`.
 Debian and Fedora official packaging policies usually prefer source packages and
 distribution-managed Python dependencies, not vendoring a Python runtime. Use

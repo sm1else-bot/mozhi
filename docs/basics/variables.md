@@ -14,9 +14,14 @@ name = expression vechukko
 ```
 
 ### Description
-The interpreter evaluates the `expression` on the right side of the `=` operator and registers the resulting value in the current local scope under the key `name`. 
+The interpreter evaluates the expression on the right of `=` and stores its
+value under `name`. A new binding is created locally.
 
 If `name` is already defined in the local scope or any parent scope (such as outer loops or conditional blocks), the interpreter searches up the parent environment chain and updates the variable in its original scope rather than defining a new local duplicate.
+
+[Function parameters](../advanced/functions.md#scope) bind locally and can
+shadow outer variables. Names use ASCII letters, digits and underscores, and
+cannot start with a digit. Strings can contain Tamil or other UTF-8 text.
 
 ---
 
@@ -59,3 +64,4 @@ counter = counter + 1 vechukko
 ## Next Steps
 * Learn how to output variables to the screen in [Input & Output](io.md).
 * See how variables control conditions in [Conditionals](../control-flow/conditionals.md).
+* Save an example and [run it from the CLI](../cli/programs.md).

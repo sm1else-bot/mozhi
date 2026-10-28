@@ -6,7 +6,12 @@ This example demonstrates a complete, interactive terminal-based Calculator app 
 
 ## The Calculator Code
 
-From the repository root, run `python src/mozhi.py examples/calculator.mozhi`, or paste the following code into the playground and click **Run Mozhi**. The input sequence `1`, `10`, `5`, `6` adds ten, shows the total, and exits the menu.
+After [installing Mozhi](../install.md), run
+`mozhi run examples/calculator.mozhi` from a checkout, or save the code below
+as `calculator.mozhi` and run `mozhi run calculator.mozhi`. The legacy Python
+launcher remains supported. The input sequence `1`, `10`, `5`, `6` adds ten,
+shows the total, and exits the menu. You can also paste the program into Studio.
+The [CLI example guide](cli-programs.md) explains downloads without a checkout.
 
 ```text
 # A simple Calculator in Mozhi

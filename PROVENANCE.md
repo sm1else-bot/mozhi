@@ -59,7 +59,7 @@ The machine-readable [snapshot index](evidence/snapshots.json) contains full UTC
 | Original README and Markdown docs | Original versions in archival commits; current README replaced and docs corrected in October |
 | Generated MkDocs site | Omitted from Git; retained privately in the forensic archive |
 
-Modern commits use actual October creation times. They add the layout, README, license, language notes, contributor guidance, validation and this provenance index. Their IDs are ordinary Git history; no self-referential current-commit hash is embedded here. Archival commit/tree IDs are frozen and verified independently. Later verification reports are kept outside the public tree.
+Modern commits use actual October creation times. They add the layout, README, license, language notes, contributor guidance, validation and this provenance index. Their IDs are ordinary Git history; no self-referential current-commit hash is embedded here. Archival commit/tree IDs are frozen and verified independently. Private forensic verification reports remain outside the public tree; contemporary public release receipts are separate records under `evidence/releases/`.
 
 ## Privacy and publication
 
@@ -78,3 +78,9 @@ After publication, modern work fixes scope, OOP, termination, operators and diag
 ## Modern standalone distribution
 
 The 2026-10-28 packaging work moves the canonical modern interpreter into `src/mozhi/core.py`, adds terminal adapters and release preparation, and regenerates the browser adapter. These are modern changes, not recovered historical artifacts. The archival commits, dates, trees, and evidence hashes above remain unchanged. Native executable bundling includes Python; Mozhi source remains interpreted. Registry acceptance and release publication are separate from preparing package metadata.
+
+The modern 0.1.0 release is public on PyPI, GitHub Releases, the maintainer
+Homebrew tap and as a downloadable `.deb`. Contemporary receipts record
+publication/build identifiers and exact asset hashes; they do not authenticate
+the historical development dates. Installation and CLI documentation are modern
+explanations of the shipped interpreter, not newly recovered archival versions.

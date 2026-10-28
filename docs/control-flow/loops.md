@@ -2,6 +2,10 @@
 
 Mozhi supports loop iteration using the `varaikum` ("until/while") block. This runs statements repeatedly as long as a condition holds true.
 
+The implemented condition is a while condition: the body runs while it is
+truthy. There is no separate `for` or range-loop syntax. A counter can index
+arrays using `neelam`, as shown in the [CLI examples](../examples/cli-programs.md).
+
 ---
 
 ## Iteration Block: `varaikum`
@@ -81,3 +85,4 @@ mudivu
 ## Next Steps
 * Learn to group variables in [Arrays (Varisai)](../advanced/arrays.md).
 * Structure complex objects using [Object-Oriented Programming (OOP)](../advanced/oop.md).
+* Put repeated calculations into [functions](../advanced/functions.md).

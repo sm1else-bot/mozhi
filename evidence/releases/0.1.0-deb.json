@@ -1,0 +1,20 @@
+{
+  "version": "0.1.0",
+  "releaseCommit": "d213a6d5432af7fc0085aa33e28268bd5861bffd",
+  "nativeBuildUrl": "https://github.com/sm1else-bot/mozhi/actions/runs/40769573228",
+  "artifact": {
+    "filename": "mozhi_0.1.0_amd64.deb",
+    "sha256": "545ad56a73df3dbad0d53494b95c2190b751bef5933861c781539cd46deb3ff8",
+    "url": "https://github.com/sm1else-bot/mozhi/releases/download/v0.1.0/mozhi_0.1.0_amd64.deb",
+    "publishedAtUtc": "2026-10-28T21:55:35Z",
+    "checksumUrl": "https://github.com/sm1else-bot/mozhi/releases/download/v0.1.0/mozhi_0.1.0_amd64.deb.sha256"
+  },
+  "verificationUrl": "https://github.com/sm1else-bot/mozhi/actions/runs/40776472622",
+  "verifiedInstallCLIReinstallRemove": [
+    "Debian package on ubuntu:22.04",
+    "Debian package on debian:12",
+    "Debian package on ubuntu:24.04"
+  ],
+  "originalReleaseAssetsUnchanged": true,
+  "scope": "Direct GitHub Release .deb download; no APT repository or official Debian/Ubuntu archive submission"
+}

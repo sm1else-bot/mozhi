@@ -16,7 +16,23 @@ Mozhi explores grammar as well as vocabulary. `sollu` (say) follows the expressi
 
 This is an experimental language with an explicitly preserved archival history. The current CLI and browser adapters share parser/runtime fixes through generated browser code. Neither is production-ready, Python-compatible, or a sandbox for untrusted code. Original interpreter stages remain unchanged in the archival commits.
 
-## Run the CLI
+## Install and run the CLI
+
+### Debian / Ubuntu x64
+
+```sh
+curl -fLO https://github.com/sm1else-bot/mozhi/releases/download/v0.1.0/mozhi_0.1.0_amd64.deb
+curl -fLO https://github.com/sm1else-bot/mozhi/releases/download/v0.1.0/mozhi_0.1.0_amd64.deb.sha256
+sha256sum -c mozhi_0.1.0_amd64.deb.sha256
+sudo apt install ./mozhi_0.1.0_amd64.deb
+```
+
+Python is bundled. The package requires x86-64, glibc 2.35+ and `zlib1g`.
+It does not configure an APT repository or make `apt install mozhi` available
+from Debian/Ubuntu's official archives. Upgrade by downloading and installing
+the next verified `.deb`; remove with `sudo apt remove mozhi`.
+
+### PyPI and Homebrew
 
 [Mozhi 0.1.0 is available on PyPI](https://pypi.org/project/mozhi/0.1.0/). Install with Python 3.10 or later:
 
@@ -44,7 +60,7 @@ Install from this checkout with Python 3.10 or later (no runtime dependencies):
 ```sh
 python -m pip install -e .
 mozhi --version
-mozhi run examples/hello.mozhi
+mozhi run examples/hello_world.mozhi
 mozhi examples/fibonacci.mozhi
 mozhi check examples/file_io.mozhi
 mozhi repl
@@ -58,7 +74,24 @@ Build Python distributions with `python -m pip install -r requirements-build.txt
 
 **Distribution channels:** PyPI is the first public distribution channel. Version 0.1.0 was published on October 28, 2026 through GitHub Actions Trusted Publishing and verified with a clean public-registry installation. Homebrew is available through the maintainer tap, using the verified native archives from the [v0.1.0 GitHub Release](https://github.com/sm1else-bot/mozhi/releases/tag/v0.1.0). WinGet, Chocolatey, AUR, Debian and Fedora registry entries remain unpublished. No release is published automatically by a version tag.
 
-Expected hello output:
+The downloadable `.deb` is public; official Debian/Ubuntu archive listings remain
+unpublished. [Installation](https://projects.jessenth.com/mozhi/learn/install/)
+covers native downloads, PATH, upgrades, removal and platform requirements.
+
+### CLI guides
+
+- [Command reference](https://projects.jessenth.com/mozhi/learn/cli/)
+- [First program, file paths and pipes](https://projects.jessenth.com/mozhi/learn/cli/programs/)
+- [Interactive REPL](https://projects.jessenth.com/mozhi/learn/cli/repl/)
+- [CLI example programs](https://projects.jessenth.com/mozhi/learn/examples/cli-programs/)
+- [Troubleshooting](https://projects.jessenth.com/mozhi/learn/troubleshooting/)
+
+Examples under `examples/` require a checkout or individual source downloads.
+Installing a wheel/native package does not create that folder in your current
+directory. `check` validates syntax only, not runtime names, types or arithmetic.
+Ctrl+C stops a file run with status 130; in the REPL it returns to the prompt.
+
+The opening program in this README prints:
 
 ```text
 Vanakkam, world!
@@ -111,7 +144,7 @@ See [LANGUAGE.md](https://github.com/sm1else-bot/mozhi/blob/main/LANGUAGE.md) fo
 - This is still an experimental language, not full Python compatibility. Constructors are called manually after `ClassName porul`; indexed assignment and module imports are not implemented.
 - Errors now report source statement lines and validate indentation, argument counts, array indices, properties, input conversion and control-flow placement. There is no exception-handling syntax for recovering within a Mozhi program yet.
 - The browser limit measures elapsed execution time outside input waits, not CPU instructions. A stopped worker must reload Pyodide. Extremely memory-hungry programs are not safely sandboxed. CLI execution remains unbounded; use Ctrl+C or an external process timeout for intentional endless programs.
-- There is no module system, compatibility guarantee, or official GitHub Linguist recognition. Native archives and package-manager metadata are prepared, not claims of accepted registry listings. The playground highlighter is a lightweight token highlighter, not a language server or autocomplete engine.
+- There is no module system, compatibility guarantee, or official GitHub Linguist recognition. Native archives, the `.deb`, PyPI and the maintainer Homebrew tap are public; other prepared package-manager metadata is not an accepted registry listing. The playground highlighter is a lightweight token highlighter, not a language server or autocomplete engine.
 
 ## Runtime checks
 
@@ -141,7 +174,11 @@ python -m mkdocs serve
 python -m mkdocs build --strict
 ```
 
-The generated `site/` is ignored. The docs cover [runtime controls](https://github.com/sm1else-bot/mozhi/blob/main/docs/runtime.md), [operators](https://github.com/sm1else-bot/mozhi/blob/main/docs/basics/operators.md), and [error handling](https://github.com/sm1else-bot/mozhi/blob/main/docs/errors.md). Exact original documentation remains in the archival commits.
+The generated `site/` is ignored. After building, run `python tools/check_docs.py`
+to validate documentation links, rendered anchors and runnable Mozhi snippets.
+The docs cover installation, CLI/REPL use, functions, language features, the
+standard library, browser controls and release maintenance. Exact original
+documentation remains in the archival commits.
 
 ## Roadmap and contributions
 

@@ -50,9 +50,14 @@ expose the host filesystem. The existing input adapter remains asynchronous and
 the worker's execution budget still applies. Other deterministic built-ins are
 checked against both adapters, including actual Pyodide browser execution.
 
-New runnable examples are `hello_world.mozhi`, `fibonacci.mozhi`,
+The [CLI example guide](examples/cli-programs.md) links the runnable sources,
+expected outputs and download instructions. Examples include `hello_world.mozhi`, `fibonacci.mozhi`,
 `arrays_loops.mozhi`, `recursion.mozhi`, `file_io.mozhi`, `benchmark.mozhi`,
 `long_running.mozhi`, and `standard_library.mozhi`. Existing examples remain.
 The long-running example intentionally exceeds the browser's default 10-second
 limit; run it locally or raise that browser limit. Neural-network, attention,
 and MozhiBERT examples were not present in this checkout and are not fabricated.
+
+Use [Installation](install.md) to obtain the local interpreter and
+[CLI file execution](cli/programs.md#working-directory-and-file-io) for path
+and filesystem behavior. `mozhi check` does not execute built-ins.
