@@ -1,0 +1,9 @@
+# Varisaiyil irukkum engalai serkkalam.
+values = [2, 4, 6, 8] vechukko
+i = 0 vechukko
+total = 0 vechukko
+i < neelam(values) varaikum:
+    total = total + values[i] vechukko
+    i = i + 1 vechukko
+mudivu
+total sollu

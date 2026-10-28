@@ -2,17 +2,24 @@
 
 ## Command line
 
-From the repository root, use Python 3.10 or later:
+Install from the repository with Python 3.10 or later:
 
 ```sh
-python src/mozhi.py examples/hello.mozhi
-python src/mozhi.py examples/demo.mozhi
-python src/mozhi.py examples/library.mozhi
-python src/mozhi.py examples/gossip.mozhi
-python src/mozhi.py examples/calculator.mozhi
+python -m pip install -e .
+mozhi --version
+mozhi run examples/hello.mozhi
+mozhi examples/fibonacci.mozhi
+mozhi check examples/file_io.mozhi
+mozhi repl
 ```
 
-The CLI uses the Python standard library. Without a filename, or with `--example`, it runs the built-in demonstration. Source files and redirected input/output use UTF-8. Both `kelu` and `ketukko` read a string. CLI programs have no automatic time limit; Ctrl+C stops a running program.
+The installed command and `python -m mozhi` work from any directory. `run` and shorthand accept relative/absolute paths and UTF-8 source. `check` tokenizes and parses without execution; it is not a static type checker. `mozhi` alone shows help. The legacy `python src/mozhi.py` adapter still runs its built-in example without arguments or with `--example`.
+
+Exit codes are 0 for success, 1 for language/file errors, 2 for usage errors, and 130 for Ctrl+C. Output goes to stdout; errors include the filename and available statement line on stderr. Local programs are not subject to the browser timeout.
+
+In the REPL, assignments and functions persist. Multiline blocks use the same grammar and `mudivu` terminator as files. Expressions echo their value; `quit`, `exit`, or EOF exits. Ctrl+C cancels the current input/run and keeps the session. Invalid input reports an error without discarding the environment. Already-executed changes are not rolled back.
+
+Native distributions bundle Python. See [Distribution](distribution.md) for availability, native builds and package-manager preparation. [Standard library](standard-library.md) documents local file I/O and shared built-ins.
 
 ## Browser playground
 
@@ -61,7 +68,7 @@ The current draft, editor preferences, completed lessons, and last eight runs ar
 
 ## Maintaining the two adapters
 
-The synchronous core is `src/mozhi.py`. `tools/sync_playground.py` generates an asynchronous browser engine in `playground/runtime.py`, retaining the same parser and language behavior with a different input/output adapter. After core changes:
+The synchronous core is `src/mozhi/core.py`; `src/mozhi.py` is a compatibility launcher. `tools/sync_playground.py` generates an asynchronous browser engine in `playground/runtime.py`, retaining the same parser and language behavior with a different input/output adapter. After core changes:
 
 ```sh
 python tools/sync_playground.py

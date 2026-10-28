@@ -1,0 +1,4 @@
+# Ithu ullooril mattum odum; UTF-8 koppai ezhuthi padikkalam.
+ezhuthu("mozhi-example.txt", "வணக்கம்\n")
+serthu_ezhuthu("mozhi-example.txt", "Mozhi\n")
+padi("mozhi-example.txt") sollu

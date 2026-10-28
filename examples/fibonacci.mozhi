@@ -1,0 +1,8 @@
+# Mudhal paththu Fibonacci engal paarkalam.
+seiy fib(n):
+    n < 2 na:
+        n thirumbu
+    mudivu
+    fib(n - 1) + fib(n - 2) thirumbu
+mudivu
+fib(10) sollu

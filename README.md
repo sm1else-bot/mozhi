@@ -10,7 +10,7 @@ a = 10 vechukko
 
 Mozhi explores grammar as well as vocabulary. `sollu` (say) follows the expression, `vechukko` (keep/store) closes an assignment, and conditions precede `na` or `varaikum`. Assignment still uses infix `=`, so this is a hybrid syntax rather than a fully postfix stack language. Tamil has many dialects and constructions; Mozhi is an experiment, not a complete model of Tamil grammar.
 
-**Historical note:** Mozhi was conceived on May 31, 2026, and developed further in June 2026. This GitHub repository was first published on October 27, 2026. Its early Git commits are retrospectively dated archival reconstructions from recovered source files and development records, not original commits made at that time. See [PROVENANCE.md](PROVENANCE.md) for methodology and evidence.
+**Historical note:** Mozhi was conceived on May 31, 2026, and developed further in June 2026. This GitHub repository was first published on October 27, 2026. Its early Git commits are retrospectively dated archival reconstructions from recovered source files and development records, not original commits made at that time. See [PROVENANCE.md](https://github.com/sm1else-bot/mozhi/blob/main/PROVENANCE.md) for methodology and evidence.
 
 ## Status
 
@@ -18,12 +18,24 @@ This is an experimental language with an explicitly preserved archival history. 
 
 ## Run the CLI
 
-Use Python 3.10 or later. The CLI uses only the standard library and needs no pip install.
+Install from this checkout with Python 3.10 or later (no runtime dependencies):
 
 ```sh
-python src/mozhi.py examples/hello.mozhi
-python -m unittest discover -s tests -v
+python -m pip install -e .
+mozhi --version
+mozhi run examples/hello.mozhi
+mozhi examples/fibonacci.mozhi
+mozhi check examples/file_io.mozhi
+mozhi repl
 ```
+
+`mozhi` works outside the repository after installation. `python -m mozhi` is also supported. Local programs have no execution timeout. Ctrl+C returns exit code 130; source/runtime/I/O errors go to stderr and return 1, and usage errors return 2. Source and terminal pipes use UTF-8. `check` parses without running statements.
+
+The REPL retains variables and functions, continues multiline blocks until `mudivu`, echoes expression values, and recovers from errors. `quit`, `exit`, or EOF ends the session. A failed block may have already changed state; the REPL does not roll back executed statements.
+
+Build Python distributions with `python -m pip install -r requirements-build.txt` and `python -m build`. Standalone Windows, macOS and Linux archives bundle Python with PyInstaller, so end users do not need to install Python. See [distribution and installation](https://github.com/sm1else-bot/mozhi/blob/main/docs/distribution.md) for native build commands, package-manager preparation, and publication status.
+
+**Registry status:** package-manager entries and release artifacts are being prepared. This repository does not claim public PyPI, Homebrew, WinGet, Chocolatey, AUR, Debian, or Fedora availability. `pip install mozhi` from PyPI is a future publication command, not the current installation instruction. No release is published automatically by a version tag.
 
 Expected hello output:
 
@@ -32,7 +44,7 @@ Vanakkam, world!
 Value: 10
 ```
 
-There is no installed `mozhi` command or packaged REPL yet. Invoking the CLI without a filename (or with `--example`) runs the built-in demo. All five programs in `examples/` now work with the CLI and browser; the calculator requests interactive input.
+The legacy `python src/mozhi.py file.mozhi` entry point remains supported; without arguments it still runs the original built-in demo. The installed `mozhi` command shows help without arguments. Existing examples are preserved. New examples cover Fibonacci, recursion, arrays, UTF-8 file I/O, timing, and an 11-second local computation. File I/O is explicitly local-only; the browser retains its own execution limit.
 
 ## Use the playground
 
@@ -71,14 +83,14 @@ Programs execute in a worker. **Stop** terminates even a tight infinite loop, an
 | Length and conversion | `neelam`, `enn`, `padam`, `vaari` | Same names |
 | `podhum` | Terminates the current program, including nested calls | Same semantics; engine remains reusable |
 
-See [LANGUAGE.md](LANGUAGE.md) for the supported syntax and [the documentation source](docs/index.md) for examples. The browser runs a generated asynchronous adapter, `playground/runtime.py`, in Pyodide. `tools/sync_playground.py` generates its parser/runtime from `src/mozhi.py`; input/output adapters differ, but language fixes are kept together. After changing the core, run `python tools/sync_playground.py`. A regression check detects a stale generated artifact.
+See [LANGUAGE.md](https://github.com/sm1else-bot/mozhi/blob/main/LANGUAGE.md) for the supported syntax and [the documentation source](https://github.com/sm1else-bot/mozhi/blob/main/docs/index.md) for examples. The browser runs a generated asynchronous adapter, `playground/runtime.py`, in Pyodide. `tools/sync_playground.py` generates its parser/runtime from `src/mozhi/core.py`; input/output adapters differ, but language fixes are kept together. After changing the core, run `python tools/sync_playground.py`. A regression check detects a stale generated artifact.
 
 ## Known limitations
 
 - This is still an experimental language, not full Python compatibility. Constructors are called manually after `ClassName porul`; indexed assignment and module imports are not implemented.
 - Errors now report source statement lines and validate indentation, argument counts, array indices, properties, input conversion and control-flow placement. There is no exception-handling syntax for recovering within a Mozhi program yet.
 - The browser limit measures elapsed execution time outside input waits, not CPU instructions. A stopped worker must reload Pyodide. Extremely memory-hungry programs are not safely sandboxed. CLI execution remains unbounded; use Ctrl+C or an external process timeout for intentional endless programs.
-- No module/package ecosystem, standard library collection, compatibility guarantee, packaged installer, or official GitHub Linguist recognition is included. The playground highlighter is a lightweight token highlighter, not a language server or autocomplete engine.
+- There is no module system, compatibility guarantee, or official GitHub Linguist recognition. Native archives and package-manager metadata are prepared, not claims of accepted registry listings. The playground highlighter is a lightweight token highlighter, not a language server or autocomplete engine.
 
 ## Runtime checks
 
@@ -108,12 +120,12 @@ python -m mkdocs serve
 python -m mkdocs build --strict
 ```
 
-The generated `site/` is ignored. The docs cover [runtime controls](docs/runtime.md), [operators](docs/basics/operators.md), and [error handling](docs/errors.md). Exact original documentation remains in the archival commits.
+The generated `site/` is ignored. The docs cover [runtime controls](https://github.com/sm1else-bot/mozhi/blob/main/docs/runtime.md), [operators](https://github.com/sm1else-bot/mozhi/blob/main/docs/basics/operators.md), and [error handling](https://github.com/sm1else-bot/mozhi/blob/main/docs/errors.md). Exact original documentation remains in the archival commits.
 
 ## Roadmap and contributions
 
-Next: a fuller language specification, deeper runtime coverage, a CLI/REPL package, richer editor integration, then modules and packaging. Official Linguist recognition is a future milestone; `.mozhi` files are not relabeled as Python.
+Next: a fuller language specification, deeper runtime coverage, richer editor integration, a larger standard library, and modules. Official Linguist recognition is a future milestone; `.mozhi` files are not relabeled as Python.
 
-Read [CONTRIBUTING.md](CONTRIBUTING.md) before proposing changes. The language concept and syntax were directed by the project author; implementation was AI-assisted with Claude, then Gemini and Google Antigravity. These tools assisted development rather than independently originating the author's language idea.
+Read [CONTRIBUTING.md](https://github.com/sm1else-bot/mozhi/blob/main/CONTRIBUTING.md) before proposing changes. The language concept and syntax were directed by the project author; implementation was AI-assisted with Claude, then Gemini and Google Antigravity. These tools assisted development rather than independently originating the author's language idea.
 
-Licensed under [MIT](LICENSE). [HISTORY.md](HISTORY.md) describes the chronology; [PROVENANCE.md](PROVENANCE.md) explains the retrospective commits.
+Licensed under [MIT](https://github.com/sm1else-bot/mozhi/blob/main/LICENSE). [HISTORY.md](https://github.com/sm1else-bot/mozhi/blob/main/HISTORY.md) describes the chronology; [PROVENANCE.md](https://github.com/sm1else-bot/mozhi/blob/main/PROVENANCE.md) explains the retrospective commits.

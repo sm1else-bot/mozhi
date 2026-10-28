@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools==84.2.1"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mozhi"
+dynamic = ["version"]
+description = "A Tamil-inspired, verb-final interpreted programming language"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{name = "Jessenth Ebenezer"}]
+keywords = ["interpreter", "programming-language", "tamil", "tanglish"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+  "Topic :: Software Development :: Interpreters",
+]
+
+[project.scripts]
+mozhi = "mozhi.cli:main"
+
+[project.urls]
+Homepage = "https://projects.jessenth.com/mozhi/"
+Repository = "https://github.com/sm1else-bot/mozhi"
+Documentation = "https://projects.jessenth.com/mozhi/learn/"
+Issues = "https://github.com/sm1else-bot/mozhi/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.dynamic]
+version = {attr = "mozhi._version.__version__"}

@@ -53,7 +53,7 @@ The machine-readable [snapshot index](evidence/snapshots.json) contains full UTC
 
 | Historical Git path | Current path |
 | --- | --- |
-| `mozhi.py` | `src/mozhi.py` (later modern runtime fixes; exact expanded snapshot remains in E03) |
+| `mozhi.py` | `src/mozhi/core.py` (via the modern `src/mozhi.py` compatibility launcher; exact expanded snapshot remains in E03) |
 | `mozhionline.html` | `playground/` (later worker UI and generated runtime; exact HTML remains in E04) |
 | Four root `.mozhi` examples | `examples/` (unchanged) |
 | Original README and Markdown docs | Original versions in archival commits; current README replaced and docs corrected in October |
@@ -74,3 +74,7 @@ In October 2026, the six initial subjects were revised for readability. Each rew
 ## Later runtime repairs
 
 After publication, modern work fixes scope, OOP, termination, operators and diagnostics, and moves playground execution into a terminable worker. The browser language engine is now generated from the core source with an asynchronous adapter. None of these fixes is backdated: E01–E05 retain their original bytes and remain the source of the historical SHA-256 values above. Current source hashes are expected to differ from those archival snapshots.
+
+## Modern standalone distribution
+
+The 2026-10-28 packaging work moves the canonical modern interpreter into `src/mozhi/core.py`, adds terminal adapters and release preparation, and regenerates the browser adapter. These are modern changes, not recovered historical artifacts. The archival commits, dates, trees, and evidence hashes above remain unchanged. Native executable bundling includes Python; Mozhi source remains interpreted. Registry acceptance and release publication are separate from preparing package metadata.

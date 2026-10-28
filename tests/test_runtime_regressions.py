@@ -1,3 +1,4 @@
+import ast
 import json
 import pathlib
 import subprocess
@@ -35,7 +36,9 @@ class RuntimeRegressions(unittest.TestCase):
                 self.assertIn(text, result['error'])
 
     def test_generated_browser_matches_core(self):
-        self.assertEqual((ROOT / 'playground/runtime.py').read_text(encoding='utf-8'), generate())
+        # ast.unparse formatting differs across supported Python versions.
+        saved = (ROOT / 'playground/runtime.py').read_text(encoding='utf-8')
+        self.assertEqual(ast.dump(ast.parse(saved)), ast.dump(ast.parse(generate())))
 
     def test_loop_and_nested_block_updates(self):
         self.success('i = 0 vechukko\ni < 3 varaikum:\n'

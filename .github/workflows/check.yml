@@ -1,0 +1,45 @@
+name: Check Mozhi language and browser
+on:
+  push:
+    branches: [main, standalone-distribution]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ['3.10', '3.12', '3.13', '3.14']
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m pip install -r requirements-build.txt
+      - run: python -m unittest discover -s tests -q
+  browser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: python -m pip install -r requirements-docs.txt
+      - run: python tools/build_site.py
+      - name: Check actual Pyodide and existing studio
+        env:
+          MOZHI_TEST_BROWSER: /usr/bin/google-chrome
+        run: |
+          npm run test:browser
+          npm run test:studio
+          npm run test:site

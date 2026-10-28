@@ -40,6 +40,9 @@ markdown_extensions:
 nav:
   - Welcome: index.md
   - Running Mozhi: runtime.md
+  - Distribution: distribution.md
+  - First PyPI Release: pypi-release.md
+  - Standard Library: standard-library.md
   - Basics:
       - Variables: basics/variables.md
       - Input & Output: basics/io.md

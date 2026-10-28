@@ -1,0 +1,6 @@
+# Sarangalai pirithu inaithu maatralam.
+words = pirithu("vanakkam,nanba", ",") vechukko
+inaithu(words, " ") sollu
+maatru("Mozhi nalla irukku", "nalla", "romba nalla") sollu
+ver(81) sollu
+seeratra(7, 7) sollu
