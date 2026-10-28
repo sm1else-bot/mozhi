@@ -1,4 +1,5 @@
 site_name: Mozhi Documentation
+site_url: https://projects.jessenth.com/mozhi/learn/
 site_description: Professional documentation for the Tanglish-based Mozhi programming language.
 repo_url: https://github.com/sm1else-bot/mozhi
 repo_name: sm1else-bot/mozhi
