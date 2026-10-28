@@ -5,7 +5,6 @@ import platform
 import runpy
 import shutil
 import subprocess
-import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 VERSION = runpy.run_path(str(ROOT / "src/mozhi/_version.py"))["__version__"]
@@ -36,20 +35,27 @@ def test_chocolatey(metadata):
 def test_brew(metadata, archives):
     formula = metadata / "homebrew-mozhi" / "Formula" / "mozhi.rb"
     original = "https://github.com/sm1else-bot/mozhi/releases/download/v" + VERSION
-    with tempfile.TemporaryDirectory(prefix="mozhi-tap-") as folder:
-        local = Path(folder) / "mozhi.rb"
-        local.write_text(formula.read_text().replace(original, archives.resolve().as_uri()))
-        installed = False
-        try:
-            run(["brew", "install", "--formula", str(local)])
-            installed = True
-            run(["brew", "test", "mozhi"])
-            run(["brew", "reinstall", "--formula", str(local)])
-            run(["brew", "test", "mozhi"])
-        finally:
-            if installed:
-                run(["brew", "uninstall", "mozhi"])
-        assert shutil.which("mozhi") is None, "Homebrew binary survived uninstall"
+    tap = "mozhi-ci/distribution"
+    qualified = tap + "/mozhi"
+    run(["brew", "tap-new", "--no-git", tap])
+    directory = Path(subprocess.check_output(["brew", "--repository", tap], text=True).strip())
+    local = directory / "Formula/mozhi.rb"
+    local.parent.mkdir(exist_ok=True)
+    local.write_text(formula.read_text().replace(original, archives.resolve().as_uri()))
+    installed = False
+    try:
+        # A real local tap also exercises current Homebrew's formula trust rules.
+        run(["brew", "install", "--formula", qualified])
+        installed = True
+        run(["brew", "test", qualified])
+        run(["brew", "reinstall", "--formula", qualified])
+        run(["brew", "test", qualified])
+    finally:
+        if installed:
+            run(["brew", "uninstall", qualified])
+        run(["brew", "untap", tap])
+    assert shutil.which("mozhi") is None, "Homebrew binary survived uninstall"
+
 
 
 if __name__ == "__main__":

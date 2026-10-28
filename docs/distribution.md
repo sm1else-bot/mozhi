@@ -132,7 +132,10 @@ versioned GitHub Release; test every URL after publishing it.
 
 **Homebrew:** use the generated `homebrew-mozhi/Formula/mozhi.rb` to populate the
 official `sm1else-bot/homebrew-mozhi` tap once that release exists. Then the user
-workflow is `brew tap sm1else-bot/mozhi` followed by `brew install mozhi`.
+workflow is `brew tap sm1else-bot/mozhi` followed by
+`brew install sm1else-bot/mozhi/mozhi`. For the short `brew install mozhi`
+command, Homebrew 6 requires trusting the formula first with
+`brew trust --formula sm1else-bot/mozhi/mozhi`.
 `brew upgrade mozhi` and `brew uninstall mozhi` follow normal Homebrew behavior.
 Homebrew/core acceptance is separate and normally calls for a reviewed
 source-build formula; do not advertise an untapped `brew install mozhi` today.
