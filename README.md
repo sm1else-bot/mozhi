@@ -30,6 +30,15 @@ See the [PyPI project](https://pypi.org/project/mozhi/) for published versions.
 Create a UTF-8 `.mozhi` file, then use `mozhi run file.mozhi` to execute it or
 `mozhi check file.mozhi` to validate its syntax without running it.
 
+On macOS (Apple Silicon or Intel) and Linux x64, install the bundled interpreter through the [official Homebrew tap](https://github.com/sm1else-bot/homebrew-mozhi). This option does not need a separate Python installation:
+
+```sh
+brew install sm1else-bot/mozhi/mozhi
+mozhi --version
+```
+
+The tested baselines are macOS 15 and Linux with glibc 2.35+. This is a maintainer tap, separate from Homebrew/core.
+
 Install from this checkout with Python 3.10 or later (no runtime dependencies):
 
 ```sh
@@ -47,7 +56,7 @@ The REPL retains variables and functions, continues multiline blocks until `mudi
 
 Build Python distributions with `python -m pip install -r requirements-build.txt` and `python -m build`. Standalone Windows, macOS and Linux archives bundle Python with PyInstaller, so end users do not need to install Python. See [distribution and installation](https://github.com/sm1else-bot/mozhi/blob/main/docs/distribution.md) for native build commands, package-manager preparation, and publication status.
 
-**Distribution channels:** PyPI is the first public distribution channel. Version 0.1.0 was published on October 28, 2026 through GitHub Actions Trusted Publishing and verified with a clean public-registry installation. Homebrew, WinGet, Chocolatey, AUR, Debian and Fedora packaging is prepared for later releases, and this repository does not claim public availability through those managers. No release is published automatically by a version tag.
+**Distribution channels:** PyPI is the first public distribution channel. Version 0.1.0 was published on October 28, 2026 through GitHub Actions Trusted Publishing and verified with a clean public-registry installation. Homebrew is available through the maintainer tap, using the verified native archives from the [v0.1.0 GitHub Release](https://github.com/sm1else-bot/mozhi/releases/tag/v0.1.0). WinGet, Chocolatey, AUR, Debian and Fedora registry entries remain unpublished. No release is published automatically by a version tag.
 
 Expected hello output:
 

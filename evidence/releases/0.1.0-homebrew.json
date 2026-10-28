@@ -1,0 +1,56 @@
+{
+  "url": "https://github.com/sm1else-bot/mozhi/releases/tag/v0.1.0",
+  "id": 427212077,
+  "publishedAtUtc": "2026-10-28T21:31:05Z",
+  "tagName": "v0.1.0",
+  "releaseCommit": "d213a6d5432af7fc0085aa33e28268bd5861bffd",
+  "assets": {
+    "mozhi-0.1.0-linux-x64.tar.gz": {
+      "url": "https://github.com/sm1else-bot/mozhi/releases/download/v0.1.0/mozhi-0.1.0-linux-x64.tar.gz",
+      "sha256": "c41939967a45164f712cd6e1de1db8c4732993e10fdc6ae672d425335dbdfd36"
+    },
+    "mozhi-0.1.0-macos-arm64.tar.gz": {
+      "url": "https://github.com/sm1else-bot/mozhi/releases/download/v0.1.0/mozhi-0.1.0-macos-arm64.tar.gz",
+      "sha256": "810355f2189aac3da738887fa3642d4100ef557edbaaacfe425f6c92134b9608"
+    },
+    "mozhi-0.1.0-macos-x64.tar.gz": {
+      "url": "https://github.com/sm1else-bot/mozhi/releases/download/v0.1.0/mozhi-0.1.0-macos-x64.tar.gz",
+      "sha256": "8ad9fb36a568aaf3bead593ee3d88da098acfc664a57d039ba4f82d32c17f684"
+    },
+    "mozhi-0.1.0-py3-none-any.whl": {
+      "url": "https://github.com/sm1else-bot/mozhi/releases/download/v0.1.0/mozhi-0.1.0-py3-none-any.whl",
+      "sha256": "7a871df8b6cbbd643edbee8ac586bd00dceed598e1244c75cf595b28048b3ab4"
+    },
+    "mozhi-0.1.0-windows-x64.zip": {
+      "url": "https://github.com/sm1else-bot/mozhi/releases/download/v0.1.0/mozhi-0.1.0-windows-x64.zip",
+      "sha256": "ea12b8859f14f62ca6467b842cf0d86ed7d1342c81dbc7223b41788d422bcc2f"
+    },
+    "mozhi-0.1.0.tar.gz": {
+      "url": "https://github.com/sm1else-bot/mozhi/releases/download/v0.1.0/mozhi-0.1.0.tar.gz",
+      "sha256": "70fe03c1afdd8fce7f67c887e242c8131e8d9fa16b4d73cbde8e7f3b920fdc5d"
+    },
+    "SHA256SUMS": {
+      "url": "https://github.com/sm1else-bot/mozhi/releases/download/v0.1.0/SHA256SUMS",
+      "sha256": "359f937b81e4b9d2f650c8b9fd2771c0429c831bfcc78921758b7c424d60f7ef"
+    }
+  },
+  "version": "0.1.0",
+  "buildUrl": "https://github.com/sm1else-bot/mozhi/actions/runs/40769573228",
+  "tap": {
+    "url": "https://github.com/sm1else-bot/homebrew-mozhi",
+    "commit": "e55fa7faf25a79ebfe70fb7c07b04241c72fba3a",
+    "formulaSha256": "be4a2e57908881eee60f49c10cbd36274e69fcf575d2b1ae04537098de39d1ca",
+    "verificationUrl": "https://github.com/sm1else-bot/homebrew-mozhi/actions/runs/40772793682",
+    "verifiedInstallTestReinstallUninstall": [
+      "Homebrew ubuntu-22.04",
+      "Homebrew macos-15",
+      "Homebrew macos-15-intel"
+    ],
+    "publicDownloadChecksumsVerified": [
+      "macos-arm64",
+      "macos-x64",
+      "linux-x64"
+    ]
+  },
+  "scope": "GitHub native release and maintainer Homebrew tap; no WinGet, Chocolatey, AUR, Debian or Fedora registry submission"
+}

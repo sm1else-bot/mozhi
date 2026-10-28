@@ -1,26 +1,30 @@
-# Prepared official tap: sm1else-bot/homebrew-mozhi
+# Official Mozhi Homebrew tap
 
-The complete native build creates `dist/package-managers/homebrew-mozhi/Formula/mozhi.rb`
-using actual macOS ARM64/x64 and Linux x64 artifact hashes. This directory does
-not contain a placeholder formula with invented checksums.
+The public maintainer tap lives at <https://github.com/sm1else-bot/homebrew-mozhi>.
+It is separate from Homebrew/core.
 
-After an explicitly approved release is public, create the public repository
-`sm1else-bot/homebrew-mozhi`, copy the generated `Formula/mozhi.rb` and a README
-there, run its tests, then publish the tap. Consumers can then use:
-
-```
-brew tap sm1else-bot/mozhi
+```sh
 brew install sm1else-bot/mozhi/mozhi
-brew test mozhi
+brew test sm1else-bot/mozhi/mozhi
+brew update
 brew upgrade mozhi
 brew uninstall mozhi
 ```
 
-Those are post-publication commands, not a claim that the tap exists today.
-For the unqualified `brew install mozhi` command on Homebrew 6, first run
-`brew trust --formula sm1else-bot/mozhi/mozhi`. Tapping alone does not grant
-formula trust. This is separate from Homebrew/core acceptance.
-Homebrew/core normally requires source builds, suitable licensing, maintained
-upstream releases, and formula review. Submit a source-based core formula through
-Homebrew's contribution process once eligible; an upstream binary tap formula is
-not automatically suitable for core.
+The tap supports macOS ARM64/Intel and Linux x64 using verified native release
+archives with Python bundled. Its CI installs, tests, reinstalls and uninstalls
+through real public release URLs on all three native runners.
+
+For future releases, the complete language build generates
+`dist/package-managers/homebrew-mozhi/Formula/mozhi.rb` with actual archive hashes.
+Publish the approved immutable GitHub Release assets, verify every public URL,
+then update the tap with that generated formula and release evidence. Require
+its native CI to pass and test upgrades from the preceding version. The tap's
+README contains the full maintainer procedure.
+
+For short-name `brew install mozhi` on Homebrew 6, tap first, then run
+`brew trust --formula sm1else-bot/mozhi/mozhi`. Fully qualified installation
+already selects and trusts only this formula.
+
+Homebrew/core acceptance would require a separate eligible source-based formula
+and review; this tap does not claim that acceptance.

@@ -10,7 +10,7 @@ package versions derive from it.
 
 [Mozhi 0.1.0 is published on PyPI](https://pypi.org/project/mozhi/0.1.0/), the first public distribution channel. Follow the
 [first PyPI release guide](pypi-release.md) for exact account and Trusted
-Publishing setup. Other registries remain prepared for later publication.
+Publishing setup. [The maintainer Homebrew tap](https://github.com/sm1else-bot/homebrew-mozhi) is also public, backed by the tested native GitHub Release assets. WinGet, Chocolatey and Linux registry entries remain prepared for later publication.
 
 This repository prepares distributions; preparation is not registry acceptance.
 No actual release, PyPI upload, tap publication, or community submission is
@@ -19,9 +19,9 @@ preparation only. Publication is a separately approved manual workflow.
 
 | Channel | Implementation | Publication status / prerequisite |
 | --- | --- | --- |
-| Direct download | Native archives, Python runtime, licenses, SHA-256 receipts | Approved GitHub Release |
+| Direct download | Native archives, Python runtime, licenses, SHA-256 receipts | [v0.1.0 published](https://github.com/sm1else-bot/mozhi/releases/tag/v0.1.0) |
 | PyPI | Wheel, sdist, console script; no runtime pip dependencies | 0.1.0 published October 28, 2026 through Trusted Publishing; public installation verified |
-| Homebrew | Generated multi-platform formula and native install/test/reinstall/uninstall checks | Publish `sm1else-bot/homebrew-mozhi` after release URLs work |
+| Homebrew | macOS ARM64/Intel and Linux x64 formula; install/test/reinstall/uninstall CI | [Official maintainer tap published](https://github.com/sm1else-bot/homebrew-mozhi); separate from Homebrew/core |
 | WinGet | Validated `jessenth.Mozhi` version/installer/locale manifests, portable x64 ZIP | Submit to `microsoft/winget-pkgs` and pass review |
 | Chocolatey | Embedded official archive, checksum validation, shim install/uninstall, versioned fallback URL, nupkg | Account, package-ID ownership, community moderation |
 | AUR | Generated `mozhi-bin` PKGBUILD with exact archive digest | AUR account/SSH key, name check and maintenance |
@@ -134,9 +134,10 @@ Chocolatey package sources, Linux recipes, checksums and release notes. These
 files use real computed hashes, not placeholders. URLs target the matching
 versioned GitHub Release; test every URL after publishing it.
 
-**Homebrew:** use the generated `homebrew-mozhi/Formula/mozhi.rb` to populate the
-official `sm1else-bot/homebrew-mozhi` tap once that release exists. Then the user
-workflow is `brew tap sm1else-bot/mozhi` followed by
+**Homebrew:** the official maintainer tap is public at
+[`sm1else-bot/homebrew-mozhi`](https://github.com/sm1else-bot/homebrew-mozhi). Install
+directly with `brew install sm1else-bot/mozhi/mozhi`, or run
+`brew tap sm1else-bot/mozhi` followed by
 `brew install sm1else-bot/mozhi/mozhi`. For the short `brew install mozhi`
 command, Homebrew 6 requires trusting the formula first with
 `brew trust --formula sm1else-bot/mozhi/mozhi`.
