@@ -8,6 +8,10 @@ package versions derive from it.
 
 ## Availability versus preparation
 
+PyPI is the first planned public distribution channel. Follow the
+[first PyPI release guide](pypi-release.md) for exact account and Trusted
+Publishing setup. Other registries remain prepared for later publication.
+
 This repository prepares distributions; preparation is not registry acceptance.
 No actual release, PyPI upload, tap publication, or community submission is
 authorized merely by running the build. A version tag triggers testing and

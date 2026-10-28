@@ -1,4 +1,4 @@
-"""Install, reinstall/upgrade, test and uninstall a wheel in a fresh external venv."""
+"""Install, reinstall, execute and uninstall a wheel or sdist in an external venv."""
 from pathlib import Path
 import argparse
 import subprocess
@@ -17,11 +17,14 @@ def test_wheel(wheel, version):
         python = binary_dir / ("python.exe" if sys.platform == "win32" else "python")
         executable = binary_dir / ("mozhi.exe" if sys.platform == "win32" else "mozhi")
         for options in ([], ["--upgrade", "--force-reinstall"]):
-            subprocess.run([str(python), "-m", "pip", "install", "--no-deps", *options, str(wheel.resolve())], cwd=folder, check=True)
+            index = ["--no-index"] if wheel.name.endswith(".whl") else ["--index-url", "https://pypi.org/simple"]
+            subprocess.run([str(python), "-m", "pip", "--isolated", "install", "--no-deps", *index, *options, str(wheel.resolve())], cwd=folder, check=True)
             smoke(executable, version, python_free=False)
         subprocess.run([str(python), "-m", "pip", "uninstall", "-y", "mozhi"], cwd=folder, check=True)
         assert not executable.exists(), "Console entry point survived uninstall"
-    print("PASS wheel install, upgrade/reinstall, external execution and uninstall")
+        result = subprocess.run([str(python), "-I", "-c", "import mozhi"], cwd=folder, capture_output=True)
+        assert result.returncode != 0, "Mozhi package survived uninstall"
+    print(f"PASS {wheel.name}: install, reinstall, external execution and uninstall")
 
 
 if __name__ == "__main__":

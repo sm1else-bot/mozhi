@@ -53,6 +53,7 @@ jobs:
           python -m build
           python -m twine check dist/*.whl dist/*.tar.gz
           python tools/smoke_wheel.py dist/mozhi-*-py3-none-any.whl --version "$(python -c "exec(open('src/mozhi/_version.py').read()); print(__version__)")"
+          python tools/smoke_wheel.py dist/mozhi-*.tar.gz --version "$(python -c "exec(open('src/mozhi/_version.py').read()); print(__version__)")"
       - name: Build, extract and execute the native archive
         run: |
           python tools/build_standalone.py
