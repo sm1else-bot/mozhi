@@ -1,0 +1,51 @@
+name: Verify public Debian package
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Published version to verify
+        required: true
+        default: '0.1.0'
+        type: string
+permissions:
+  contents: read
+jobs:
+  install:
+    name: Debian package on ${{ matrix.image }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        image: ['ubuntu:22.04', 'ubuntu:24.04', 'debian:12']
+    container:
+      image: ${{ matrix.image }}
+    env:
+      VERSION: ${{ inputs.version }}
+      DEBIAN_FRONTEND: noninteractive
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install verification tools
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends ca-certificates curl python3
+      - name: Download and verify the public package
+        shell: bash
+        run: |
+          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          PACKAGE="mozhi_${VERSION}_amd64.deb"
+          URL="https://github.com/sm1else-bot/mozhi/releases/download/v${VERSION}/${PACKAGE}"
+          curl --fail --location --output "$PACKAGE" "$URL"
+          curl --fail --location --output "$PACKAGE.sha256" "$URL.sha256"
+          sha256sum --check "$PACKAGE.sha256"
+      - name: Install, exercise CLI and reinstall
+        run: |
+          apt-get install -y "./mozhi_${VERSION}_amd64.deb"
+          python3 tools/smoke_distribution.py /usr/bin/mozhi --version "$VERSION"
+          apt-get install -y --reinstall "./mozhi_${VERSION}_amd64.deb"
+          mozhi --version
+      - name: Uninstall and verify removal
+        if: always()
+        run: |
+          apt-get remove -y mozhi
+          test ! -e /usr/bin/mozhi
