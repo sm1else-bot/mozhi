@@ -8,7 +8,7 @@ package versions derive from it.
 
 ## Availability versus preparation
 
-PyPI is the first planned public distribution channel. Follow the
+[Mozhi 0.1.0 is published on PyPI](https://pypi.org/project/mozhi/0.1.0/), the first public distribution channel. Follow the
 [first PyPI release guide](pypi-release.md) for exact account and Trusted
 Publishing setup. Other registries remain prepared for later publication.
 
@@ -17,10 +17,10 @@ No actual release, PyPI upload, tap publication, or community submission is
 authorized merely by running the build. A version tag triggers testing and
 preparation only. Publication is a separately approved manual workflow.
 
-| Channel | Prepared implementation | External prerequisite |
+| Channel | Implementation | Publication status / prerequisite |
 | --- | --- | --- |
 | Direct download | Native archives, Python runtime, licenses, SHA-256 receipts | Approved GitHub Release |
-| PyPI | Wheel, sdist, console script; no runtime pip dependencies | Name ownership, account/trusted publisher, approved upload |
+| PyPI | Wheel, sdist, console script; no runtime pip dependencies | 0.1.0 published October 28, 2026 through Trusted Publishing; public installation verified |
 | Homebrew | Generated multi-platform formula and native install/test/reinstall/uninstall checks | Publish `sm1else-bot/homebrew-mozhi` after release URLs work |
 | WinGet | Validated `jessenth.Mozhi` version/installer/locale manifests, portable x64 ZIP | Submit to `microsoft/winget-pkgs` and pass review |
 | Chocolatey | Embedded official archive, checksum validation, shim install/uninstall, versioned fallback URL, nupkg | Account, package-ID ownership, community moderation |
@@ -29,10 +29,10 @@ preparation only. Publication is a separately approved manual workflow.
 | Fedora | RPM spec and optional rpmbuild foundation | Fedora review, source packaging policy, maintained submission |
 
 `jessenth.Mozhi` is the namespace explicitly selected by the maintainer, not a
-claim of an already registered WinGet package. The PyPI JSON lookup for `mozhi`
-returned 404 on 2026-10-28; that neither reserves the name nor guarantees future
-availability. Check again immediately before publishing. Chocolatey, AUR and
-distribution package IDs likewise require ownership/availability checks.
+claim of an already registered WinGet package. The `mozhi` PyPI project was
+created by the approved first upload on October 28, 2026. Future PyPI uploads
+use that project's configured Trusted Publisher. Chocolatey, AUR and distribution
+package IDs still require ownership/availability checks.
 
 ## Native targets
 
@@ -160,7 +160,7 @@ only after package-ID ownership is established. Pass package validation,
 verification/VirusTotal and moderation. Unsigned PyInstaller files can attract
 false positives; investigate rather than disabling endpoint protection.
 
-**PyPI:** run `python -m build`, `python -m twine check dist/*.whl dist/*.tar.gz`,
+**PyPI:** version 0.1.0 is public and `pip install mozhi` is verified. For a future release, run `python -m build`, `python -m twine check dist/*.whl dist/*.tar.gz`,
 then install the wheel from outside the checkout. Configure PyPI Trusted
 Publishing for this repository's approved publishing workflow, or use Twine with
 a scoped credential stored outside the repository. Verify name ownership before

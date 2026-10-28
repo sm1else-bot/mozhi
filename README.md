@@ -18,7 +18,7 @@ This is an experimental language with an explicitly preserved archival history. 
 
 ## Run the CLI
 
-For a published PyPI version, install with Python 3.10 or later:
+[Mozhi 0.1.0 is available on PyPI](https://pypi.org/project/mozhi/0.1.0/). Install with Python 3.10 or later:
 
 ```sh
 python -m pip install mozhi
@@ -47,7 +47,7 @@ The REPL retains variables and functions, continues multiline blocks until `mudi
 
 Build Python distributions with `python -m pip install -r requirements-build.txt` and `python -m build`. Standalone Windows, macOS and Linux archives bundle Python with PyInstaller, so end users do not need to install Python. See [distribution and installation](https://github.com/sm1else-bot/mozhi/blob/main/docs/distribution.md) for native build commands, package-manager preparation, and publication status.
 
-**Distribution channels:** PyPI is the first public distribution target; the linked PyPI project page is the source for published versions. Homebrew, WinGet, Chocolatey, AUR, Debian and Fedora packaging is prepared for later releases, and this repository does not claim public availability through those managers. No release is published automatically by a version tag.
+**Distribution channels:** PyPI is the first public distribution channel. Version 0.1.0 was published on October 28, 2026 through GitHub Actions Trusted Publishing and verified with a clean public-registry installation. Homebrew, WinGet, Chocolatey, AUR, Debian and Fedora packaging is prepared for later releases, and this repository does not claim public availability through those managers. No release is published automatically by a version tag.
 
 Expected hello output:
 

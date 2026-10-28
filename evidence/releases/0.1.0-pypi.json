@@ -1,0 +1,19 @@
+{
+  "project": "https://pypi.org/project/mozhi/",
+  "version": "0.1.0",
+  "releaseCommit": "d213a6d5432af7fc0085aa33e28268bd5861bffd",
+  "buildRun": 40769573228,
+  "publishRun": 40770330529,
+  "files": {
+    "mozhi-0.1.0-py3-none-any.whl": "7a871df8b6cbbd643edbee8ac586bd00dceed598e1244c75cf595b28048b3ab4",
+    "mozhi-0.1.0.tar.gz": "70fe03c1afdd8fce7f67c887e242c8131e8d9fa16b4d73cbde8e7f3b920fdc5d"
+  },
+  "publicUnqualifiedInstallTested": true,
+  "publishedAtUtc": {
+    "mozhi-0.1.0-py3-none-any.whl": "2026-10-28T21:15:59.863017Z",
+    "mozhi-0.1.0.tar.gz": "2026-10-28T21:16:01.334257Z"
+  },
+  "nativeBuildUrl": "https://github.com/sm1else-bot/mozhi/actions/runs/40769573228",
+  "publishUrl": "https://github.com/sm1else-bot/mozhi/actions/runs/40770330529",
+  "scope": "PyPI only; other registry publication was not performed"
+}

@@ -1,6 +1,15 @@
 # First PyPI release
 
-PyPI is the first planned public package channel. Preparing its release does not
+[Mozhi 0.1.0](https://pypi.org/project/mozhi/0.1.0/) was published on October 28,
+2026 through Trusted Publishing. Its public wheel and source archive match the
+approved checksums, and clean public-registry install, CLI, REPL, syntax-check
+and uninstall tests passed. The first publisher is now active. The setup below
+is retained as the release-maintainer procedure.
+
+Release source: `d213a6d5432af7fc0085aa33e28268bd5861bffd`, tag `v0.1.0`.
+[Publishing run](https://github.com/sm1else-bot/mozhi/actions/runs/40770330529).
+
+PyPI is the first public package channel. Preparing its release does not
 authorize uploads to PyPI, a GitHub Release, Homebrew, WinGet, Chocolatey or Linux
 registries. All cross-platform packaging infrastructure remains available for later.
 
